@@ -47,7 +47,7 @@
           </div>
           <div class="ad_main">炎炎夏日的新選擇</div>
           <div>
-             <router-link to="/shop/夏季新品" class="ad_btn">立即選購</router-link>
+             <router-link to="/shop/夏季新品" class="ad_btn">夏季新品</router-link>
           </div>
         </div>
        </div>
@@ -64,6 +64,39 @@
          </li>
        </ul>
     </div>
+  <div class="news_block container-fluid">
+    <div class="container">
+      <h2 class="block_title text-center">LATEST NEWS</h2>
+       <ul class="news_list">
+         <li v-for="item in display_news" :key="item.id">
+           <router-link :to="`/post/${item.id}`" class="thumbnail" :style="`background-image:url(${item.imageUrl})`">
+             <div class="news_overlay"></div>
+             <span class="read_more">了解更多</span>
+           </router-link>
+           <div class="post_content">
+             <h3>
+               <router-link :to="`/post/${item.id}`">{{item.title}}</router-link>
+             </h3>
+             <div class="excerpt">{{item.description}}</div>
+           </div>
+           <div class="post_info">
+             <div class="d-flex align-items-center">
+               <span class="material-icons">
+                  account_circle
+              </span>
+              <span class="mx-1 text">{{item.author}}</span>
+             </div>
+             <div class="d-flex align-items-center">
+               <span class="material-icons">
+                   local_offer
+                </span>
+                <span class="mx-1 text">{{item.tag}}</span>
+              </div>
+           </div>
+         </li>
+       </ul>
+    </div>
+    </div>
     <Footer></Footer>
   </div>
 </template>
@@ -77,31 +110,31 @@ export default {
     return {
       category: [
         {
-          title: '男士衣裝',
+          title: '男性衣裝',
           bg: 'https://images.unsplash.com/photo-1592994238317-fcf75c5466fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=634&q=80',
-          link: '/shop/男士衣裝'
+          link: '/shop/男性衣裝'
         },
         {
-          title: '女士衣裝',
+          title: '女性衣裝',
           bg: 'https://images.unsplash.com/photo-1512310604669-443f26c35f52?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=675&q=80',
-          link: '/shop/女士衣裝'
+          link: '/shop/女性衣裝'
         },
         {
-          title: '男士配件',
+          title: '男性配件',
           bg: 'https://images.unsplash.com/photo-1472417583565-62e7bdeda490?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80',
-          link: '/shop/男士配件'
+          link: '/shop/男性配件'
         },
         {
-          title: '女士配件',
+          title: '女性配件',
           bg: 'https://images.unsplash.com/photo-1610249101495-41cc9cd8b301?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80',
-          link: '/shop/女士配件'
+          link: '/shop/女性配件'
         }
 
       ],
       path: process.env.VUE_APP_PATH,
       url: process.env.VUE_APP_API,
-      header_color: 'dark',
       product_list: [],
+      news_list: [],
       pagination: {}
     }
   },
@@ -122,6 +155,22 @@ export default {
         .catch(function (err) {
           console.log(err)
         })
+    },
+    getNews (page = 1) {
+      var vm = this
+      vm.$store.commit('startLoading', true)
+      vm.$http.get(`${vm.url}/api/${vm.path}/articles?page=${page}`)
+        .then(function (res) {
+          // console.log(res)
+          if (res.data.success) {
+            vm.news_list = res.data.articles
+            vm.$store.commit('startLoading', false)
+            console.log(res)
+          }
+        })
+        .catch(function (err) {
+          console.log(err)
+        })
     }
   },
   computed: {
@@ -129,10 +178,21 @@ export default {
       const newArray = [...this.product_list]
       newArray.splice(0, 2)
       return newArray
+    },
+    display_news () {
+      const newArray = [...this.news_list]
+      const result = []
+      if (newArray.length > 3) {
+        for (let i = 0; i < 3; i++) {
+          result.push(newArray[i])
+        }
+      }
+      return result
     }
   },
   created () {
     this.getProducts()
+    this.getNews()
   },
   components: {
     Header, Footer
@@ -371,7 +431,7 @@ export default {
      opacity: 1;
    }
    .product_category_list li a span {
-     color:#c2a09e;
+     color:#000000;
      background: #ffffff;
      padding:8px 20px;
      font-family: 'Noto Sans TC', sans-serif;
@@ -388,39 +448,92 @@ export default {
      background-attachment: fixed;
      /* margin-bottom: 100px; */
    }
-   .footer_wrapper {
-     background: #322b2b;
-     padding: 50px 0;
+   .news_block {
+     background: #ffefea;
+     padding: 50px;
    }
-   .footer_block h2{
-     color:#ffffff;
-     font-size: 16px;
-     padding-left: 10px;
-     border-left:3px solid #fe5252;
-     line-height: 16px;
-     margin-bottom: 50px;
-     letter-spacing: 1px;
-   }
-   .footer_block .material-icons {
-     color:#fe5252;
-   }
-   .footer_contact_list {
+   .news_list {
      margin: 0;
      padding: 0;
-   }
-   .footer_contact_list li {
      display: flex;
-     align-items: center;
-     margin-bottom: 20px;
    }
-   .footer_contact_item_group {
+   .news_list li {
+     width: 31%;
+     margin: 0 1%;
      display: flex;
      flex-direction: column;
-     margin-left: 10px;
    }
-   .footer_contact_item_group span {
+   .news_list li .thumbnail {
+     height:250px;
+     background-size: cover;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     text-decoration: none;
      color:#ffffff;
-     font-size: 14px;
+     position: relative;
+     font-size: 16px;
      letter-spacing: 1px;
    }
+   .news_list li .thumbnail .news_overlay {
+     position: absolute;
+     top:0;
+     left:0;
+     bottom: 0;
+     right: 0;
+     background: rgba(0,0,0,0.3);
+     transition: all .3s;
+     opacity: 0;
+     pointer-events: none;
+   }
+   .news_list li .thumbnail:hover .read_more{
+     opacity: 1;
+   }
+   .news_list li .thumbnail:hover .news_overlay {
+     opacity: 1;
+   }
+   .news_list li .read_more {
+     border:1px solid #ffffff;
+     padding: 5px 15px;
+     border-radius: 15px;
+     transition: all .3s;
+     opacity:0;
+     position: relative;
+   }
+   .news_list li .read_more:hover {
+     background: #ffffff;
+     color:#000000;
+   }
+    .news_list li .post_content {
+     border:1px solid #f0eff0;
+     padding: 15px;
+     background: #ffffff;
+   }
+    .news_list li .post_content h3 {
+     text-align: center;
+     font-size: 24px;
+     margin-bottom: 10px;
+     font-family: 'Noto Sans TC', sans-serif;
+   }
+   .news_list li .post_content h3 a {
+     transition: all .3s;
+     text-decoration: none;
+     color:inherit;
+   }
+   .news_list li .post_content h3 a:hover {
+     color:#fe5252;
+   }
+    .news_list li .post_content .excerpt {
+     font-size: 16px;
+   }
+    .news_list li .post_info {
+      background: #f0eff0;
+      padding: 10px 15px;
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .news_list li .post_info .text {
+      font-size: 14px;
+    }
 </style>

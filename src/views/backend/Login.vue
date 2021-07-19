@@ -4,7 +4,8 @@
             <div class="login-form">
                 <div class="login-img" style="background-image:url('https://images.unsplash.com/photo-1581044777550-4cfa60707c03?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=633&q=80')"></div>
                     <Form class="user-info" v-slot="{ errors }" @submit="login">
-                        <!-- <div>logo</div> -->
+                        <h1 class="logo">B<span class="logo_accessory">&</span>E</h1>
+                        <span class="sub_title">The best for everyone</span>
                         <div class="input-container">
                             <label for="username">帳號</label>
                              <Field id="username" name="帳號" type="email" class="form-control" :class="{ 'is-invalid': errors['帳號'] }" placeholder="請輸入Email地址" rules="email|required" v-model="username"></Field>
@@ -73,6 +74,24 @@ export default {
 </script>
 
 <style scoped>
+  .logo {
+    text-align: center;
+    font-family:'Sriracha',handwriting;
+    color:#fe5252;
+    margin-bottom:0;
+    font-size: 48px;
+  }
+  .logo_accessory {
+    font-size: 24px;
+    margin: 0 2px;
+  }
+  .sub_title {
+    font-size: 14px;
+    font-family:'Sriracha',handwriting;
+    margin-bottom: 20px;
+    color:#000000;
+    text-align: center;
+  }
   .login-container {
       background: #c2a09e;
       height: 100vh;

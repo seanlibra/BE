@@ -12,7 +12,9 @@
                     <li>
                         <router-link to="/admin/coupon">優惠管理</router-link>
                     </li>
-                    <li>文章管理</li>
+                    <li>
+                        <router-link to="/admin/posts">文章管理</router-link>
+                    </li>
                 </ul>
                 <a @click.prevent="logOut" class="logout" href="#">登出</a>
             </div>

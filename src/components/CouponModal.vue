@@ -1,6 +1,6 @@
 <template>
-  <div class="del_order_modal_container" :class="{ active : modalStatus }">
-      <div class="del_order_modal" :class="{ active : modalStatus }">
+  <div class="coupon_modal_container" :class="{ active : modalStatus }">
+      <div class="coupon_modal" :class="{ active : modalStatus }">
           <div class="header">
               <h2 v-if="isnew">新增優惠券</h2>
               <h2 v-else>更新優惠券</h2>
@@ -48,7 +48,7 @@ export default {
     return {
       couponDetail: {
         percent: 0,
-        is_enabled: 0,
+        is_enabled: Boolean,
         due_date: 0
       },
       due_date: '',
@@ -125,7 +125,7 @@ export default {
   watch: {
     due_date () {
       if (this.isnew) {
-        this.couponDetail.due_date = Math.floor(new Date(this.due_date) / 1000)
+        this.couponDetail.create_at = Math.floor(new Date(this.due_date) / 1000)
       }
     },
     coupon () {
@@ -151,7 +151,7 @@ export default {
 </script>
 
 <style scoped>
-  .del_order_modal_container {
+  .coupon_modal_container {
       position: absolute;
       top:0;
       left:0;
@@ -162,11 +162,11 @@ export default {
       transition: all .3s;
       pointer-events: none;
   }
-  .del_order_modal_container.active {
+  .coupon_modal_container.active {
       opacity: 1;
       pointer-events: auto;
   }
-  .del_order_modal {
+  .coupon_modal {
        /* max-height:500px; */
         width:600px;
         /* border:1px solid #000000; */
@@ -178,10 +178,10 @@ export default {
         box-shadow: 10px 10px 30px -10px rgb(0 0 0 / 25%);
         transition: all .5s;
   }
-  .del_order_modal.active {
+  .coupon_modal.active {
       top:50%;
   }
-  .del_order_modal .header {
+  .coupon_modal .header {
         background:#c2a09e;
         padding: 16px;
         border-top-right-radius: 5px;
@@ -190,19 +190,19 @@ export default {
         justify-content: space-between;
         align-items: center;
     }
-    .del_order_modal .header h2 {
+    .coupon_modal .header h2 {
         font-size: 18px;
         color:#ffffff;
         margin: 0;
     }
-    .del_order_modal .header .leave {
+    .coupon_modal .header .leave {
       color:#ffffff;
     }
-    .del_order_modal .body {
+    .coupon_modal .body {
         background: #ffffff;
         padding: 16px;
     }
-    .del_order_modal .footer {
+    .coupon_modal .footer {
         padding: 16px;
         background: #ffffff;
         border-top:1px solid #dee2e6;

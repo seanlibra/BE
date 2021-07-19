@@ -33,6 +33,13 @@
                         <span>商品分類: </span>
                         <router-link :to="`/shop/${product.category}`">{{product.category}}</router-link>
                     </div>
+                    <div class="soical_media_container">
+                      <a style="background-image:url('https://i.imgur.com/sUM6rZ1.png')" href="#"></a>
+                      <a style="background-image:url('https://i.imgur.com/rxHpEdl.png')" href="#"></a>
+                      <a style="background-image:url('https://i.imgur.com/i9i9Hpf.png')" href="#"></a>
+                      <a style="background-image:url('https://i.imgur.com/mQ6bpWS.png')" href="#"></a>
+                      <a style="background-image:url('https://i.imgur.com/jMyZwmb.png')" href="#"></a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -204,5 +211,18 @@ input[type=number] {
     text-decoration: none;
     color:#7e7e7e;
      font-family: inherit;
+}
+.soical_media_container {
+  display: flex;
+}
+.soical_media_container a{
+  width: 30px;
+  height:30px;
+  background-size: contain;
+  margin-right: 15px;
+  transition: all .3s;
+}
+.soical_media_container a:hover {
+  opacity: 0.5;
 }
 </style>

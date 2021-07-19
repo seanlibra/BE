@@ -20,6 +20,10 @@ const routes = [
     component: () => import('../views/frontend/SingleProduct.vue')
   },
   {
+    path: '/post/:id',
+    component: () => import('../views/frontend/SinglePost.vue')
+  },
+  {
     path: '/login',
     component: () => import('../views/backend/Login.vue')
   },
@@ -38,6 +42,10 @@ const routes = [
       {
         path: 'coupon',
         component: () => import('../views/backend/Coupon.vue')
+      },
+      {
+        path: 'posts',
+        component: () => import('../views/backend/PostsList.vue')
       }
     ]
   }
