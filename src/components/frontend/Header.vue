@@ -9,8 +9,15 @@
           <li>
             <router-link to="/shop/all">Shop</router-link>
           </li>
+          <li>
+            <router-link to="/blog/all">Blog</router-link>
+          </li>
           <li>About</li>
-          <li>Contact</li>
+          <li>
+            <a href="#" class="cart_link">
+               <span class="cart">{{cart_count}}</span>
+            </a>
+          </li>
         </ul>
       </div>
 </template>
@@ -22,8 +29,37 @@ export default {
   },
   data () {
     return {
-      // text_dark: false
+      path: process.env.VUE_APP_PATH,
+      url: process.env.VUE_APP_API,
+      carts: []
     }
+  },
+  methods: {
+    getCartInfo () {
+      var vm = this
+      vm.$store.commit('startLoading', true)
+      vm.$http.get(`${vm.url}/api/${vm.path}/cart`)
+        .then(function (res) {
+          // console.log(res)
+          if (res.data.success) {
+            vm.carts = res.data.data.carts
+            // vm.pagination = res.data.pagination
+            vm.$store.commit('startLoading', false)
+            console.log(res)
+          }
+        })
+        .catch(function (err) {
+          console.log(err)
+        })
+    }
+  },
+  computed: {
+    cart_count () {
+      return this.carts.length
+    }
+  },
+  created () {
+    this.getCartInfo()
   }
 }
 </script>
@@ -53,6 +89,7 @@ export default {
   }
   .header .header_menu {
     display: flex;
+    align-items: center;
     margin:0;
     padding:0;
   }
@@ -63,6 +100,8 @@ export default {
     font-family: 'Roboto', sans-serif;
     font-size: 18px;
     letter-spacing: 1px;
+    display: flex;
+    align-items: center;
   }
    .header .header_menu.text-dark li {
     color:#000000;
@@ -73,5 +112,38 @@ export default {
     text-decoration: none;
     letter-spacing: inherit;
     font-size: inherit;
+  }
+  .cart_link:hover .cart{
+    background: #fe5252;
+    color:#ffffff;
+  }
+  .cart {
+    border:2px solid #fe5252;
+    width:30px;
+    height:30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    font-family: sans-serif;
+    color:#fe5252;
+    font-size: 14px;
+    position: relative;
+    font-weight: bold;
+    transition: all .3s;
+  }
+  .cart::after {
+    content:'';
+    position: absolute;
+    pointer-events: none;
+    border-width: 2px;
+    border-style: solid;
+    border-top-left-radius:10em;
+    border-top-right-radius:10em;
+    border-bottom:0;
+    height:12px;
+    width:12px;
+    top:-8px;
+    border-color:#fe5252;
   }
 </style>

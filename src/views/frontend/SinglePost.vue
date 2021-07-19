@@ -27,8 +27,9 @@
                </div>
                <div v-html="post.content" class="post_content"></div>
            </div>
-           <div class="posts_sidebar"></div>
+          <Sidebar :posts="post_list"></Sidebar>
       </div>
+      <Loading v-if="loading"></Loading>
       <Footer></Footer>
   </div>
 </template>
@@ -36,15 +37,34 @@
 <script>
 import Header from '@/components/frontend/Header.vue'
 import Footer from '@/components/frontend/Footer.vue'
+import Sidebar from '@/components/frontend/PostsSidebar.vue'
+import Loading from '@/components/Loading.vue'
 export default {
   data () {
     return {
       path: process.env.VUE_APP_PATH,
       url: process.env.VUE_APP_API,
-      post: {}
+      post: {},
+      post_list: {}
     }
   },
   methods: {
+    getPostList (page = 1) {
+      var vm = this
+      vm.$store.commit('startLoading', true)
+      vm.$http.get(`${vm.url}/api/${vm.path}/articles?page=${page}`)
+        .then(function (res) {
+          // console.log(res)
+          if (res.data.success) {
+            vm.post_list = res.data.articles
+            vm.$store.commit('startLoading', false)
+            console.log(res)
+          }
+        })
+        .catch(function (err) {
+          console.log(err)
+        })
+    },
     getPost () {
       var vm = this
       var id = vm.$route.params.id
@@ -70,16 +90,17 @@ export default {
       }
     }
   },
-  watch: {
-    post () {
-
+  computed: {
+    loading () {
+      return this.$store.state.isLoading
     }
   },
   created () {
     this.getPost()
+    this.getPostList()
   },
   components: {
-    Header, Footer
+    Header, Footer, Sidebar, Loading
   }
 }
 </script>
@@ -102,7 +123,7 @@ export default {
 .content h2 {
   letter-spacing: 1px;
   margin-bottom: 20px;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Noto Sans TC', sans-serif;
   font-size: 30px;
 }
 .post_info {
@@ -119,9 +140,5 @@ export default {
 }
 .post_info .info_group span {
   margin-right: 5px;
-}
-.posts_sidebar {
-  width: 25%;
-  border-left:1px solid #f1f1f1
 }
 </style>

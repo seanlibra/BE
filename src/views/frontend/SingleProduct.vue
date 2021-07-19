@@ -6,6 +6,11 @@
         <div class="content">
             <div class="product_detail">
                 <div class="left_group">
+                            <div class="ribbon ribbon-top-left" v-if="product.onsale">
+                              <span class="ribbon_content">
+                                <span class="ribbon_border">{{product.onsale}}</span>
+                              </span>
+                            </div>
                     <img class="product_img" :src="product.imageUrl">
                 </div>
                 <div class="right_group">
@@ -44,6 +49,7 @@
             </div>
         </div>
         </div>
+        <Loading v-if="loading"></Loading>
         <Footer></Footer>
     </div>
 </template>
@@ -52,6 +58,7 @@
 import Header from '@/components/frontend/Header'
 import Footer from '@/components/frontend/Footer.vue'
 import Sidebar from '@/components/frontend/Sidebar.vue'
+import Loading from '@/components/Loading.vue'
 
 export default {
   data () {
@@ -82,8 +89,13 @@ export default {
         })
     }
   },
+  computed: {
+    loading () {
+      return this.$store.state.isLoading
+    }
+  },
   components: {
-    Header, Footer, Sidebar
+    Header, Footer, Sidebar, Loading
   },
   created () {
     this.getProductDetail()
@@ -102,7 +114,6 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
-
 .wrapper {
   display:flex;
   padding:75px 0;
@@ -117,6 +128,9 @@ input[type=number] {
 .product_detail > div {
   width: 50%;
   padding: 20px;
+}
+.product_detail .left_group {
+  position: relative;
 }
 .product_detail .right_group {
  display: flex;
@@ -224,5 +238,63 @@ input[type=number] {
 }
 .soical_media_container a:hover {
   opacity: 0.5;
+}
+
+/* ribbon */
+   .ribbon {
+     width: 140px;
+     height: 140px;
+     overflow: hidden;
+     position: absolute;
+     z-index: 99;
+   }
+   .ribbon::before,
+   .ribbon::after {
+      position: absolute;
+      z-index: -1;
+      content: '';
+      display: block;
+      border: 5px solid #fe5252;
+    }
+    .ribbon .ribbon_content {
+      position: absolute;
+      display: block;
+      width: 225px;
+      padding: 15px 0;
+      background-color: #fe5252;
+      box-shadow: 0 5px 10px rgba(0,0,0,.1);
+      color: #fff;
+      font: 700 18px/1 'Lato', sans-serif;
+      text-shadow: 0 1px 1px rgba(0,0,0,.2);
+      text-transform: uppercase;
+      text-align: center;
+     }
+     .ribbon .ribbon_content .ribbon_border {
+       padding: 10px 70px;
+       border-bottom:1px solid #ffffff;
+       border-top:1px solid #ffffff;
+     }
+/* top left*/
+    .ribbon-top-left {
+      top: 10px;
+      left: 10px;
+    }
+    .ribbon-top-left::before,
+    .ribbon-top-left::after {
+      border-top-color: transparent;
+      border-left-color: transparent;
+    }
+    .ribbon-top-left::before {
+      top: 0;
+      right: 0;
+    }
+    .ribbon-top-left::after {
+      bottom: 0;
+      left: 0;
+    }
+    .ribbon-top-left span {
+      right: -25px;
+      top: 30px;
+      transform: rotate(-45deg);
 }
 </style>

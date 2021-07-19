@@ -97,6 +97,7 @@
        </ul>
     </div>
     </div>
+    <Loading v-if="loading"></Loading>
     <Footer></Footer>
   </div>
 </template>
@@ -104,6 +105,7 @@
 <script>
 import Header from '@/components/frontend/Header.vue'
 import Footer from '@/components/frontend/Footer.vue'
+import Loading from '@/components/Loading.vue'
 export default {
   name: 'Home',
   data () {
@@ -174,6 +176,9 @@ export default {
     }
   },
   computed: {
+    loading () {
+      return this.$store.state.isLoading
+    },
     arrival_list () {
       const newArray = [...this.product_list]
       newArray.splice(0, 2)
@@ -195,7 +200,7 @@ export default {
     this.getNews()
   },
   components: {
-    Header, Footer
+    Header, Footer, Loading
   }
 }
 </script>

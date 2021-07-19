@@ -22,6 +22,7 @@
         </li>
         </ul>
       </div>
+      <Loading v-if="loading"></Loading>
       <Footer></Footer>
     </div>
 </template>
@@ -30,6 +31,7 @@
 import Header from '@/components/frontend/Header.vue'
 import Footer from '@/components/frontend/Footer.vue'
 import Sidebar from '@/components/frontend/Sidebar.vue'
+import Loading from '@/components/Loading.vue'
 
 export default {
   data () {
@@ -60,6 +62,9 @@ export default {
     }
   },
   computed: {
+    loading () {
+      return this.$store.state.isLoading
+    },
     current_category_product_list () {
       var list = [...this.product_list]
       var newList = []
@@ -104,7 +109,7 @@ export default {
     this.getProducts()
   },
   components: {
-    Header, Footer, Sidebar
+    Header, Footer, Sidebar, Loading
   }
 }
 </script>

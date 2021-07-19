@@ -24,6 +24,10 @@ const routes = [
     component: () => import('../views/frontend/SinglePost.vue')
   },
   {
+    path: '/blog/:tag',
+    component: () => import('../views/frontend/Blog.vue')
+  },
+  {
     path: '/login',
     component: () => import('../views/backend/Login.vue')
   },
