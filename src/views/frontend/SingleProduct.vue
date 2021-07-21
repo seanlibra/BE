@@ -1,6 +1,6 @@
 <template>
     <div class="single_product">
-        <Header text-dark="true"></Header>
+        <Header :update-Cart="cartUpdteTrigger" :text-dark="true"></Header>
         <div class="wrapper container">
         <Sidebar></Sidebar>
         <div class="content">
@@ -16,8 +16,8 @@
                 <div class="right_group">
                     <h2 class="product_title">{{product.title}}</h2>
                     <div class="price_wrapper">
-                        <span v-if="product.price !== product.origin_price" class="origin_price">${{product.origin_price}}</span>
-                        <span class="onsale_price">${{product.price}}</span>
+                        <span :class="{ normal : product.price  == product.origin_price }"  class="origin_price">${{product.origin_price}}</span>
+                        <span  v-if="product.price !== product.origin_price" class="onsale_price">${{product.price}}</span>
                     </div>
                     <div class="description">
                         告言牛幫衣相，北行里詞那喝，你得刃停筆安內申或能許高大！結巾春兄紅高禾葉別昌尺頁。用今犬眼浪左主月至，抓色神者音年頁波人同急村叫道飽麻子定，朱麼拍；了個喝。
@@ -31,7 +31,7 @@
                                 <input min="1" max="99" type="number" v-model="count">
                                 <button @click="count++">+</button>
                             </div>
-                            <a class="add_to_cart" href="#">加入購物車</a>
+                            <a @click.prevent="addToCart" class="add_to_cart" href="#">加入購物車</a>
                         </div>
                     </div>
                     <div class="product_category_container">
@@ -65,8 +65,11 @@ export default {
     return {
       path: process.env.VUE_APP_PATH,
       url: process.env.VUE_APP_API,
-      product: {},
-      count: 1
+      product: {
+        on_sale: false
+      },
+      count: 1,
+      cartUpdteTrigger: false
     }
   },
   methods: {
@@ -87,6 +90,26 @@ export default {
         .catch(function (err) {
           console.log(err)
         })
+    },
+    addToCart () {
+      var vm = this
+      var readyToAdd = { data: { product_id: vm.product.id, qty: vm.count } }
+      vm.$store.commit('startLoading', true)
+      vm.$http.post(`${vm.url}/api/${vm.path}/cart`, readyToAdd)
+        .then(function (res) {
+          console.log(res)
+          if (res.data.success) {
+            alert(res.data.message)
+            vm.$store.commit('startLoading', false)
+            vm.cartUpdteTrigger = !vm.cartUpdteTrigger
+            // vm.cartUpdteTrigger = false
+          }
+        })
+        .catch(function (err) {
+          console.log(err)
+          vm.$store.commit('startLoading', false)
+        })
+      // console.log(readyToAdd)
     }
   },
   computed: {
@@ -157,6 +180,9 @@ input[type=number] {
   font-size: 18px;
   font-family:'Sriracha',handwriting;
   margin-right: 15px;
+}
+.product_detail .price_wrapper .origin_price.normal {
+  text-decoration: none;
 }
 .product_detail .price_wrapper .onsale_price {
   color:#fe5252;

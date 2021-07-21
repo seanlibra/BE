@@ -16,8 +16,8 @@
           <h4 class="category">{{item.category}}</h4>
           <h3 class="title">{{item.title}}</h3>
           <div class="price">
-            <span v-if="item.price !== item.origin_price" class="origin_price">$ {{item.origin_price}}</span>
-            <span class="onsale_price">$ {{item.price}}</span>
+            <span  :class="{ normal : item.price  == item.origin_price }"  class="origin_price">$ {{item.origin_price}}</span>
+            <span v-if="item.price  !== item.origin_price" class="onsale_price">$ {{item.price}}</span>
           </div>
         </li>
         </ul>
@@ -261,6 +261,9 @@ export default {
   .product_list .origin_price {
     text-decoration: line-through;
     margin-right: 10px;
+  }
+  .product_list .origin_price.normal {
+    text-decoration: none;
   }
   .product_list .onsale_price {
     color:#fe5252;

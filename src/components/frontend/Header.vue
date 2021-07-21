@@ -14,9 +14,9 @@
           </li>
           <li>About</li>
           <li>
-            <a href="#" class="cart_link">
+            <router-link to="/cart" href="#" class="cart_link">
                <span class="cart">{{cart_count}}</span>
-            </a>
+            </router-link>
           </li>
         </ul>
       </div>
@@ -25,7 +25,11 @@
 <script>
 export default {
   props: {
-    textDark: Boolean
+    textDark: Boolean,
+    updateCart: {
+      type: Boolean,
+      Default: false
+    }
   },
   data () {
     return {
@@ -60,6 +64,11 @@ export default {
   },
   created () {
     this.getCartInfo()
+  },
+  watch: {
+    updateCart () {
+      this.getCartInfo()
+    }
   }
 }
 </script>

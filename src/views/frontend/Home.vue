@@ -33,8 +33,8 @@
             <router-link :to="`/product/${item.id}`">{{item.title}}</router-link>
           </h3>
           <div class="price">
-            <span v-if="item.price !== item.origin_price" class="origin_price">$ {{item.origin_price}}</span>
-            <span class="onsale_price">$ {{item.price}}</span>
+            <span :class="{ normal : item.price  == item.origin_price }"  class="origin_price">$ {{item.origin_price}}</span>
+            <span v-if="item.price !== item.origin_price"  class="onsale_price">$ {{item.price}}</span>
           </div>
         </li>
       </ul>
@@ -99,6 +99,10 @@
     </div>
     <Loading v-if="loading"></Loading>
     <Footer></Footer>
+    <div :class="{ active : isAlert}" class="custom_alert">
+      <a href="#" class="material-icons">close</a>
+      <span>已加入購物車</span>
+    </div>
   </div>
 </template>
 
@@ -113,17 +117,17 @@ export default {
       category: [
         {
           title: '男性衣裝',
-          bg: 'https://images.unsplash.com/photo-1592994238317-fcf75c5466fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=634&q=80',
+          bg: 'https://i.imgur.com/YaTrDn6.jpg',
           link: '/shop/男性衣裝'
         },
         {
           title: '女性衣裝',
-          bg: 'https://images.unsplash.com/photo-1512310604669-443f26c35f52?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=675&q=80',
+          bg: 'https://i.imgur.com/FXvp5Yo.jpg',
           link: '/shop/女性衣裝'
         },
         {
           title: '男性配件',
-          bg: 'https://images.unsplash.com/photo-1472417583565-62e7bdeda490?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80',
+          bg: 'https://i.imgur.com/eyxzP79.jpg',
           link: '/shop/男性配件'
         },
         {
@@ -137,7 +141,8 @@ export default {
       url: process.env.VUE_APP_API,
       product_list: [],
       news_list: [],
-      pagination: {}
+      pagination: {},
+      isAlert: false
     }
   },
   methods: {
@@ -173,6 +178,13 @@ export default {
         .catch(function (err) {
           console.log(err)
         })
+    },
+    alertAction () {
+      var vm = this
+      vm.isAlert = true
+      setTimeout(() => {
+        vm.isAlert = false
+      }, 5000)
     }
   },
   computed: {
@@ -198,6 +210,7 @@ export default {
   created () {
     this.getProducts()
     this.getNews()
+    this.alertAction()
   },
   components: {
     Header, Footer, Loading
@@ -216,7 +229,7 @@ export default {
   }
   .banner {
     height:800px;
-    background-image:url(https://i.imgur.com/tbjFQCl.jpg);
+    background-image:url(https://i.imgur.com/WLxUw6c.jpg);
     background-repeat: no-repeat;
     background-size:cover;
     background-position: top;
@@ -225,7 +238,7 @@ export default {
   }
   .overlay {
     position: absolute;
-    background: linear-gradient(180deg, rgba(0,0,0,20%) 0%, rgba(0,0,0,0) 100%);
+    background: linear-gradient(180deg, rgba(0,0,0,40%) 0%, rgba(0,0,0,0) 100%);
     top:0;
     left:0;
     bottom: 0;
@@ -398,6 +411,9 @@ export default {
     text-decoration: line-through;
     margin-right: 10px;
   }
+  .product_list .origin_price.normal {
+    text-decoration: none;
+  }
   .product_list .onsale_price {
     color:#fe5252;
   }
@@ -540,5 +556,30 @@ export default {
     }
     .news_list li .post_info .text {
       font-size: 14px;
+    }
+    .custom_alert {
+      position: fixed;
+      background: #fe5252;
+      padding: 8px 16px;
+      bottom: 50px;
+      right:50px;
+      color:#ffffff;
+      border-radius: 12px;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      opacity: 1;
+      transition: all .3s;
+      opacity: 0;
+    }
+    .custom_alert a {
+      text-decoration: none;
+      color:#ffffff;
+      font-size: 18px;
+      margin-right: 10px;
+    }
+    .custom_alert.active {
+      opacity: 1;
+      pointer-events: none;
     }
 </style>

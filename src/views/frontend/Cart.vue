@@ -1,0 +1,437 @@
+<template>
+    <div class="Cart">
+      <Header :update-Cart="cartUpdteTrigger" :text-dark="true"></Header>
+      <div class="container wrapper">
+            <ul class="time_line">
+              <li class="step active">
+                  <span class="circle">1</span>
+                  <span class="text">確認訂單</span>
+              </li>
+              <li class="step">
+                  <span class="circle">2</span>
+                  <span class="text">確認資料</span>
+              </li>
+              <li class="step">
+                  <span class="circle">3</span>
+                  <span class="text">完成訂單</span>
+              </li>
+          </ul>
+          <h3 class="list_title">購物車清單</h3>
+          <table class="cart_list_table">
+              <thead>
+                  <tr>
+                      <th></th>
+                      <th>商品</th>
+                      <th>單價</th>
+                      <th>數量</th>
+                      <th>小計</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr v-for="item in list" :key="item.id">
+                      <td>
+                          <div class="product_delete_container">
+                           <a @click.prevent="deleteCartsItem(item)" href="#">
+                              <span class="material-icons">close</span>
+                          </a>
+                          </div>
+                      </td>
+                      <td>
+                          <div class="product_thumbnail">
+                            <img :src="item.product.imageUrl">
+                            <h3>{{item.product.title}}</h3>
+                          </div>
+                      </td>
+                      <td>
+                          NT$ {{item.product.price}}
+                      </td>
+                      <td>
+                          <div class="product_qty">
+                                <button @click="updateCartItemQty(item,item.qty - 1 )">-</button>
+                                <input @blur="updateCartItemQty(item,item.qty)" min="1" max="99" type="number" v-model.number="item.qty">
+                                <button @click="updateCartItemQty(item,item.qty + 1)">+</button>
+                          </div>
+                      </td>
+                      <td>
+                          NT$ {{Math.floor(item.final_total)}}
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
+          <div class="cart_total">
+              <div class="coupon_container">
+                  <input :class="{ coupon_active : coupon }" v-model="couponCode">
+                  <a class="coupon_no" v-if="!coupon" @click.prevent="useCoupon" href="#">使用優惠券</a>
+                  <a class="coupon_yes" v-else @click.prevent="useCoupon" href="#">已套用優惠券</a>
+              </div>
+              <div class="total_num">
+                  <span>總計：</span>
+                  <div class="price_container">
+                      <span :class="{ coupon_yes : cart_info.data.total !== cart_info.data.final_total }" class="total">$NT {{cart_info.data.total}}</span>
+                      <span class="final_total" v-if="cart_info.data.total !== cart_info.data.final_total">$NT {{ Math.floor(cart_info.data.final_total)}}</span>
+                  </div>
+              </div>
+          </div>
+          <div class="go_checkout">
+              <router-link to="/checkout">前往填寫資料</router-link>
+          </div>
+      </div>
+      <Loading v-if="loading"></Loading>
+      <Footer></Footer>
+    </div>
+</template>
+
+<script>
+import Header from '@/components/frontend/Header.vue'
+import Footer from '@/components/frontend/Footer.vue'
+import Loading from '@/components/Loading.vue'
+
+export default {
+  data () {
+    return {
+      path: process.env.VUE_APP_PATH,
+      url: process.env.VUE_APP_API,
+      list: [],
+      cart_info: {
+        data: {
+          total: 0
+        }
+      },
+      couponCode: '',
+      coupon: false,
+      cartUpdteTrigger: false
+    }
+  },
+  methods: {
+    getCartList () {
+      var vm = this
+      vm.$store.commit('startLoading', true)
+      vm.$http.get(`${vm.url}/api/${vm.path}/cart`)
+        .then(function (res) {
+          // console.log(res)
+          if (res.data.success) {
+            vm.list = res.data.data.carts
+            vm.cart_info = res.data
+            // vm.pagination = res.data.pagination
+            vm.$store.commit('startLoading', false)
+            console.log(res)
+          }
+        })
+        .catch(function (err) {
+          console.log(err)
+        })
+    },
+    deleteCartsItem (item) {
+      var vm = this
+      vm.$store.commit('startLoading', true)
+      vm.$http.delete(`${vm.url}/api/${vm.path}/cart/${item.id}`)
+        .then(function (res) {
+          if (res.data.success) {
+            alert(res.data.message)
+            vm.getCartList()
+            vm.$store.commit('startLoading', false)
+            vm.cartUpdteTrigger = !vm.cartUpdteTrigger
+          }
+        })
+        .catch(function (err) {
+          console.log(err)
+          vm.$store.commit('startLoading', false)
+        })
+    },
+    updateCartItemQty (item, count) {
+      var vm = this
+      vm.$store.commit('startLoading', true)
+      var readyForUpdate = { data: { product_id: item.id, qty: count } }
+      vm.$http.put(`${vm.url}/api/${vm.path}/cart/${item.id}`, readyForUpdate)
+        .then(function (res) {
+          if (res.data.success) {
+            alert(res.data.message)
+            vm.getCartList()
+            vm.$store.commit('startLoading', false)
+            vm.cartUpdteTrigger = !vm.cartUpdteTrigger
+          }
+        })
+        .catch(function (err) {
+          console.log(err)
+        })
+    },
+    useCoupon () {
+      var vm = this
+      var coupon = { data: { code: vm.couponCode } }
+      vm.$store.commit('startLoading', true)
+      vm.$http.post(`${vm.url}/api/${vm.path}/coupon`, coupon)
+        .then(function (res) {
+          if (res.data.success) {
+            alert(res.data.message)
+            vm.getCartList()
+            vm.$store.commit('startLoading', false)
+            vm.cartUpdteTrigger = !vm.cartUpdteTrigger
+            vm.coupon = true
+          } else {
+            alert(res.data.message)
+            vm.$store.commit('startLoading', false)
+          }
+        })
+        .catch(function (err) {
+          console.log(err)
+        })
+    }
+  },
+  components: {
+    Header, Footer, Loading
+  },
+  computed: {
+    loading () {
+      return this.$store.state.isLoading
+    }
+  },
+  created () {
+    this.getCartList()
+  }
+}
+</script>
+
+<style scoped>
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+/* Firefox */
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+  .wrapper {
+    /* display: flex; */
+    padding:75px 0;
+  }
+  .list_title {
+      text-align: center;
+      font-size: 36px;
+      letter-spacing: 1px;
+      margin-bottom: 30px;
+  }
+  /*timeline*/
+  .time_line {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    margin-bottom: 50px;
+    /* width:100%; */
+  }
+  .time_line .step {
+    list-style: none;
+    background: #e9e9e9;
+    color:#1a1a1a;
+    margin: 0 50px;
+    padding: 15px 30px;
+    display: flex;
+    position: relative;
+  }
+  .time_line .step::before {
+      content:'';
+      left:-20px;
+      border-top: 30px solid #e9e9e9;
+      border-bottom: 25px solid #e9e9e9;
+      border-left:20px solid transparent;
+      position: absolute;
+      top:0;
+      height:0;
+      width:0;
+  }
+  .time_line .step::after {
+     content:'';
+     right:-20px;
+     border-top:30px solid transparent;
+     border-bottom: 25px solid transparent;
+     border-left:20px solid #e9e9e9;
+     border-right-color:#e9e9e9;
+     position: absolute;
+     top:0;
+     height:0;
+     width:0;
+  }
+  .time_line .step.active::before {
+      border-top: 30px solid #fe5252;
+      border-bottom: 25px solid #fe5252;
+      border-left:20px solid transparent;
+  }
+  .time_line .step.active::after {
+     border-top:30px solid transparent;
+     border-bottom: 25px solid transparent;
+     border-left:20px solid #fe5252;
+     border-right-color:#fe5252;
+  }
+  .time_line .step .circle {
+      border:2px solid #1a1a1a;
+      background: #ffffff;
+      display: flex;
+      width: 25px;
+      height:25px;
+      border-radius: 50%;
+      text-align: center;
+      margin-right: 10px;
+      align-items: center;
+      justify-content: center;
+  }
+  .time_line .step.active {
+      background: #fe5252;
+  }
+  .time_line .step.active .text {
+      color:#ffffff;
+  }
+  .time_line .step .text {
+      letter-spacing: 1px;
+  }
+  .cart_list_table {
+      width: 100%;
+  }
+  .cart_list_table td , .cart_list_table th {
+      padding: 10px;
+  }
+  .cart_list_table thead tr {
+      background: #f7f7f7;
+      border:1px solid #e9e9e9;
+  }
+  .cart_list_table tbody tr {
+      border-left:1px solid #e9e9e9;
+      border-right:1px solid #e9e9e9;
+      border-bottom:1px solid #e9e9e9;
+  }
+  .product_delete_container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+  .product_delete_container a {
+      border:2px solid #fe5252;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 30px;
+      height:30px;
+      border-radius: 50%;
+      text-decoration: none;
+      transition: all .3s;
+  }
+  .product_delete_container a span {
+      color:#fe5252;
+      font-size: 18px;
+      transition: all .3s;
+  }
+  .product_delete_container a:hover {
+      background: #fe5252;
+  }
+   .product_delete_container a:hover span {
+       color:#ffffff;
+   }
+  .product_thumbnail {
+      display: flex;
+      align-items: center;
+  }
+  .product_thumbnail img{
+      width:75px;
+      height:75px;
+      object-fit: cover;
+      margin-right: 30px;
+  }
+  .product_thumbnail h3 {
+      font-size: 18px;
+      letter-spacing: 1px;
+  }
+  .product_qty {
+    display: flex;
+    margin-right: 15px;
+  }
+
+  .product_qty button{
+  /* display: block; */
+    width: 36px;
+    height:36px;
+    border:1px solid #e4e4e4;
+    background: #ffffff;
+  }
+  .product_qty  input {
+     width: 36px;
+     height:36px;
+     border:0;
+     border-top:1px solid #e4e4e4;
+     border-bottom:1px solid #e4e4e4;
+     text-align: center;
+     font-size: 14px;
+}
+  .cart_total {
+      border-left:1px solid #e4e4e4;
+      border-right:1px solid #e4e4e4;
+      border-bottom:1px solid #e4e4e4;
+      padding: 16px;
+      margin-bottom: 20px;
+      padding-right: 50px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+  }
+  .coupon_container {
+      margin-right: 20px;
+  }
+  .coupon_container a {
+      background: #fe5252;
+      color:#ffffff;
+      text-decoration: none;
+      padding:10px 24px;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
+  }
+    .coupon_container a.coupon_yes {
+      background: green;
+      opacity: 0.7;
+      color:#ffffff;
+      text-decoration: none;
+      padding:10px 24px;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
+      pointer-events: none;
+  }
+  .coupon_container input {
+      padding: 6px 10px;
+      border:1px solid #e4e4e4;
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
+  }
+  .coupon_container input.coupon_active {
+      opacity: 0.7;
+      pointer-events: none;
+  }
+  .go_checkout {
+      padding:12px;
+      padding-right: 0;
+      text-align: right;
+  }
+  .go_checkout a{
+      padding:10px 24px;
+      background: #fe5252;
+      color:#ffffff;
+      text-decoration: none;
+      letter-spacing: 1px;
+      border:1px solid #fe5252;
+      transition: all .3s;
+      /* border-radius: 10px; */
+  }
+  .go_checkout a:hover {
+      color:#fe5252;
+      background: #ffffff;
+  }
+  .total_num {
+      display: flex;
+      align-items: center;
+  }
+  .price_container {
+      display: flex;
+      flex-direction: column;
+  }
+  .price_container .coupon_yes {
+      text-decoration: line-through;
+      color:#e4e4e4;
+  }
+</style>
