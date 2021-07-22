@@ -11,6 +11,7 @@ import { required, email, min } from '@vee-validate/rules'
 import { localize, setLocale } from '@vee-validate/i18n'
 // 匯入繁體中文語系檔案
 import zhTW from '@vee-validate/i18n/dist/locale/zh_TW.json'
+import Bubble from '@/components/Bubble.vue'
 
 defineRule('required', required)
 defineRule('email', email)
@@ -41,6 +42,7 @@ createApp(App)
   .use(router)
   .use(store)
   .use(VueAxios, axios)
+  .component('Bubble', Bubble)
   .component('Form', Form)
   .component('Field', Field)
   .component('ErrorMessage', ErrorMessage)

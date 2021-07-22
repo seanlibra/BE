@@ -9,7 +9,7 @@
               </li>
               <li class="step">
                   <span class="circle">2</span>
-                  <span class="text">確認資料</span>
+                  <span class="text">填寫資料</span>
               </li>
               <li class="step">
                   <span class="circle">3</span>
@@ -43,7 +43,7 @@
                           </div>
                       </td>
                       <td>
-                          NT$ {{item.product.price}}
+                        NT$ {{item.product.price}}
                       </td>
                       <td>
                           <div class="product_qty">
@@ -53,15 +53,26 @@
                           </div>
                       </td>
                       <td>
-                          NT$ {{Math.floor(item.final_total)}}
+                        <div class="single_product_price_container">
+                          <div class="single_origin_price">
+                            <span :class="{ coupon_yes : item.coupon }" class="price">
+                              NT$ {{item.total}}
+                            </span>
+                            <span v-if="item.coupon" class="coupon text-success"> {{100 - item.coupon.percent}}% off</span>
+                          </div>
+                          <div v-if="item.coupon"  class="single_final_price">
+                            NT$ {{Math.floor(item.final_total)}}
+                          </div>
+                        </div>
                       </td>
                   </tr>
               </tbody>
           </table>
           <div class="cart_total">
               <div class="coupon_container">
-                  <input :class="{ coupon_active : coupon }" v-model="couponCode">
-                  <a class="coupon_no" v-if="!coupon" @click.prevent="useCoupon" href="#">使用優惠券</a>
+                  <input :class="{ coupon_active : coupon == 2 }" v-model="couponCode">
+                  <a class="coupon_no" v-if="coupon == 0" @click.prevent="useCoupon" href="#">使用優惠券</a>
+                  <a class="coupon_some" v-else-if="coupon == 1" @click.prevent="useCoupon" href="#">部分已套用優惠券</a>
                   <a class="coupon_yes" v-else @click.prevent="useCoupon" href="#">已套用優惠券</a>
               </div>
               <div class="total_num">
@@ -73,11 +84,12 @@
               </div>
           </div>
           <div class="go_checkout">
-              <router-link to="/checkout">前往填寫資料</router-link>
+              <router-link  v-if="list.length > 0" to="/checkout">前往填寫資料</router-link>
           </div>
       </div>
       <Loading v-if="loading"></Loading>
       <Footer></Footer>
+      <Bubble ref="bubble" :bubbleText="bubbleText"></Bubble>
     </div>
 </template>
 
@@ -98,8 +110,9 @@ export default {
         }
       },
       couponCode: '',
-      coupon: false,
-      cartUpdteTrigger: false
+      coupon: 0,
+      cartUpdteTrigger: false,
+      bubbleText: ''
     }
   },
   methods: {
@@ -127,9 +140,10 @@ export default {
       vm.$http.delete(`${vm.url}/api/${vm.path}/cart/${item.id}`)
         .then(function (res) {
           if (res.data.success) {
-            alert(res.data.message)
             vm.getCartList()
             vm.$store.commit('startLoading', false)
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
             vm.cartUpdteTrigger = !vm.cartUpdteTrigger
           }
         })
@@ -145,9 +159,10 @@ export default {
       vm.$http.put(`${vm.url}/api/${vm.path}/cart/${item.id}`, readyForUpdate)
         .then(function (res) {
           if (res.data.success) {
-            alert(res.data.message)
             vm.getCartList()
+            vm.bubbleText = res.data.message
             vm.$store.commit('startLoading', false)
+            vm.$refs.bubble.bubbleACtive()
             vm.cartUpdteTrigger = !vm.cartUpdteTrigger
           }
         })
@@ -162,9 +177,10 @@ export default {
       vm.$http.post(`${vm.url}/api/${vm.path}/coupon`, coupon)
         .then(function (res) {
           if (res.data.success) {
-            alert(res.data.message)
             vm.getCartList()
+            vm.bubbleText = res.data.message
             vm.$store.commit('startLoading', false)
+            vm.$refs.bubble.bubbleACtive()
             vm.cartUpdteTrigger = !vm.cartUpdteTrigger
             vm.coupon = true
           } else {
@@ -183,6 +199,22 @@ export default {
   computed: {
     loading () {
       return this.$store.state.isLoading
+    }
+  },
+  watch: {
+    list () {
+      var CheckArray = [...this.list]
+      var isSomeCoupon = CheckArray.some(el => el.coupon)
+      if (isSomeCoupon) {
+        var isAllcopon = CheckArray.every(el => el.coupon)
+        if (isAllcopon) {
+          this.coupon = 2
+        } else {
+          this.coupon = 1
+        }
+      } else {
+        this.coupon = 0
+      }
     }
   },
   created () {
@@ -361,6 +393,31 @@ export default {
      text-align: center;
      font-size: 14px;
 }
+  .single_product_price_container {
+    display: flex;
+    align-items: center;
+  }
+  .single_origin_price {
+    display: flex;
+    flex-direction: column;
+    margin-right: 20px;
+  }
+  .single_origin_price .price {
+    font-weight: bold;
+  }
+  .single_origin_price .price.coupon_yes {
+    text-decoration: line-through;
+    color:#e9e9e9;
+    min-width: 75px;
+  }
+  .single_origin_price .coupon {
+    color:#198754;
+    font-size:14px;
+    font-weight: bold;
+  }
+  .single_final_price {
+    font-weight: bold;
+  }
   .cart_total {
       border-left:1px solid #e4e4e4;
       border-right:1px solid #e4e4e4;
@@ -384,7 +441,7 @@ export default {
       border-bottom-right-radius: 5px;
   }
     .coupon_container a.coupon_yes {
-      background: green;
+      background: #28a745;
       opacity: 0.7;
       color:#ffffff;
       text-decoration: none;
@@ -392,6 +449,14 @@ export default {
       border-top-right-radius: 5px;
       border-bottom-right-radius: 5px;
       pointer-events: none;
+  }
+    .coupon_container a.coupon_some {
+      background: #ffc107;
+      color:#ffffff;
+      text-decoration: none;
+      padding:10px 24px;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
   }
   .coupon_container input {
       padding: 6px 10px;
@@ -433,5 +498,8 @@ export default {
   .price_container .coupon_yes {
       text-decoration: line-through;
       color:#e4e4e4;
+  }
+  .price_container .final_total {
+    font-weight: bold;
   }
 </style>

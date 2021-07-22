@@ -99,10 +99,6 @@
     </div>
     <Loading v-if="loading"></Loading>
     <Footer></Footer>
-    <div :class="{ active : isAlert}" class="custom_alert">
-      <a href="#" class="material-icons">close</a>
-      <span>已加入購物車</span>
-    </div>
   </div>
 </template>
 
@@ -142,7 +138,7 @@ export default {
       product_list: [],
       news_list: [],
       pagination: {},
-      isAlert: false
+      bubbleText: ''
     }
   },
   methods: {
@@ -153,6 +149,7 @@ export default {
         .then(function (res) {
           // console.log(res)
           if (res.data.success) {
+            vm.bubbleText = res.data.success
             vm.product_list = res.data.products
             vm.pagination = res.data.pagination
             vm.$store.commit('startLoading', false)
@@ -178,13 +175,6 @@ export default {
         .catch(function (err) {
           console.log(err)
         })
-    },
-    alertAction () {
-      var vm = this
-      vm.isAlert = true
-      setTimeout(() => {
-        vm.isAlert = false
-      }, 5000)
     }
   },
   computed: {
@@ -210,7 +200,6 @@ export default {
   created () {
     this.getProducts()
     this.getNews()
-    this.alertAction()
   },
   components: {
     Header, Footer, Loading
@@ -345,7 +334,8 @@ export default {
       background-color: #fe5252;
       box-shadow: 0 5px 10px rgba(0,0,0,.1);
       color: #fff;
-      font: 700 18px/1 'Lato', sans-serif;
+      font-size: 18px;
+      letter-spacing: 1px;
       text-shadow: 0 1px 1px rgba(0,0,0,.2);
       text-transform: uppercase;
       text-align: center;
@@ -390,6 +380,7 @@ export default {
      display: flex;
      flex-direction: column;
      font-size: 16px;
+     letter-spacing: 1px;
    }
    .product_list .title {
      font-size: 18px;
@@ -456,7 +447,6 @@ export default {
      background: #ffffff;
      padding:8px 20px;
      font-family: 'Noto Sans TC', sans-serif;
-     /* font-weight: bold; */
      letter-spacing: 1px;
      border-radius: 10px;
      opacity: 0;

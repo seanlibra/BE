@@ -51,6 +51,7 @@
         </div>
         <Loading v-if="loading"></Loading>
         <Footer></Footer>
+        <Bubble ref="bubble" :bubbleText="bubbleText"></Bubble>
     </div>
 </template>
 
@@ -69,7 +70,8 @@ export default {
         on_sale: false
       },
       count: 1,
-      cartUpdteTrigger: false
+      cartUpdteTrigger: false,
+      bubbleText: ''
     }
   },
   methods: {
@@ -99,17 +101,16 @@ export default {
         .then(function (res) {
           console.log(res)
           if (res.data.success) {
-            alert(res.data.message)
+            vm.bubbleText = res.data.message
             vm.$store.commit('startLoading', false)
+            vm.$refs.bubble.bubbleACtive()
             vm.cartUpdteTrigger = !vm.cartUpdteTrigger
-            // vm.cartUpdteTrigger = false
           }
         })
         .catch(function (err) {
           console.log(err)
           vm.$store.commit('startLoading', false)
         })
-      // console.log(readyToAdd)
     }
   },
   computed: {
@@ -140,6 +141,7 @@ input[type=number] {
 .wrapper {
   display:flex;
   padding:75px 0;
+  position: relative;
 }
 .content {
    width: 73%;
