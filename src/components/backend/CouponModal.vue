@@ -53,8 +53,6 @@ export default {
       },
       due_date: '',
       modalStatus: false,
-      path: process.env.VUE_APP_PATH,
-      url: process.env.VUE_APP_API,
       token: ''
     }
   },
@@ -71,21 +69,17 @@ export default {
       var vm = this
       var readyToAdd = { data: vm.couponDetail }
       vm.$store.commit('startLoading', true)
-      vm.$http.post(`${vm.url}/api/${vm.path}/admin/coupon`, readyToAdd, {
-        headers: {
-          Authorization: vm.token
-        }
-      })
+      vm.$http.post(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/coupon`, readyToAdd)
         .then(function (res) {
           console.log(res)
           if (res.data.success) {
-            alert(res.data.message)
+            vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
             console.log(res)
             vm.leaveModal()
             vm.$emit('emit-update')
           } else {
-            alert(res.data.message)
+            vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
           }
         })
@@ -98,21 +92,17 @@ export default {
       var vm = this
       var readyToUpdate = { data: vm.couponDetail }
       vm.$store.commit('startLoading', true)
-      vm.$http.put(`${vm.url}/api/${vm.path}/admin/coupon/${vm.couponDetail.id}`, readyToUpdate, {
-        headers: {
-          Authorization: vm.token
-        }
-      })
+      vm.$http.put(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/coupon/${vm.couponDetail.id}`, readyToUpdate)
         .then(function (res) {
           console.log(res)
           if (res.data.success) {
-            alert(res.data.message)
+            vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
             console.log(res)
             vm.leaveModal()
             vm.$emit('emit-update')
           } else {
-            alert(res.data.message)
+            vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
           }
         })
@@ -140,10 +130,6 @@ export default {
         }
       }
     }
-  },
-  created () {
-    const token = document.cookie.replace(/(?:(?:^|.*;\s*)vue_class\s*=\s*([^;]*).*$)|^.*$/, '$1')
-    this.token = token
   }
 }
 </script>

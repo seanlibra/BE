@@ -22,10 +22,7 @@ export default {
   },
   data () {
     return {
-      modalStatus: false,
-      path: process.env.VUE_APP_PATH,
-      url: process.env.VUE_APP_API,
-      token: ''
+      modalStatus: false
     }
   },
   methods: {
@@ -38,16 +35,12 @@ export default {
     delProduct () {
       var vm = this
       vm.$store.commit('startLoading', true)
-      vm.$http.delete(`${vm.url}/api/${vm.path}/admin/product/${vm.product.id}`, {
-        headers: {
-          Authorization: vm.token
-        }
-      })
+      vm.$http.delete(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${vm.product.id}`)
         .then(function (res) {
           if (res.data.success) {
             console.log(res)
             vm.$store.commit('startLoading', false)
-            alert(res.data.message)
+            vm.$emit('bubbleOpen', res.data.message)
             vm.leaveModal()
             vm.$emit('emit-del')
           } else {
@@ -63,10 +56,6 @@ export default {
           vm.leaveModal()
         })
     }
-  },
-  created () {
-    const token = document.cookie.replace(/(?:(?:^|.*;\s*)vue_class\s*=\s*([^;]*).*$)|^.*$/, '$1')
-    this.token = token
   }
 }
 </script>

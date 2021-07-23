@@ -2,7 +2,6 @@
   <div class="home">
     <div class="banner container-fluid py-2">
       <div class="overlay"></div>
-      <Header></Header>
       <div class="container banner_content">
         <div class="banner_ad">
           <div class="ad_prefix">
@@ -14,6 +13,7 @@
           </div>
         </div>
       </div>
+      <Header></Header>
     </div>
     <div class="new_arrival">
       <h2 class="block_title text-center">New arrival</h2>
@@ -230,10 +230,18 @@ export default {
     right:0;
   }
   .banner_content {
-    position: relative;
+    position: absolute;
+    top:0;
+    left:0;
+    right: 0;
+    bottom:0;
   }
   .banner_ad {
-    min-height:600px;
+    /* min-height:600px; */
+    position: absolute;
+    top:50%;
+    left:0;
+    transform: translateY(-25%);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -325,7 +333,7 @@ export default {
     .ribbon .ribbon_content {
       position: absolute;
       display: block;
-      width: 225px;
+      width: 250px;
       padding: 15px 0;
       background-color: #fe5252;
       box-shadow: 0 5px 10px rgba(0,0,0,.1);
@@ -409,6 +417,7 @@ export default {
    }
    .product_category_list {
      display: flex;
+     flex-wrap: wrap;
    }
    .product_category_list li {
      list-style: none;
@@ -453,6 +462,7 @@ export default {
      background-image: url('https://i.imgur.com/stCqJIz.jpg');
      background-size: cover;
      background-attachment: fixed;
+     position: relative;
      /* margin-bottom: 100px; */
    }
    .news_block {
@@ -463,6 +473,7 @@ export default {
      margin: 0;
      padding: 0;
      display: flex;
+     flex-wrap: wrap;
    }
    .news_list li {
      width: 31%;
@@ -521,6 +532,7 @@ export default {
      text-align: center;
      font-size: 24px;
      margin-bottom: 15px;
+     letter-spacing: 1px;
      font-family: 'Noto Sans TC', sans-serif;
    }
    .news_list li .post_content h3 a {
@@ -571,4 +583,97 @@ export default {
       opacity: 1;
       pointer-events: none;
     }
+    @media (max-width:768px) {
+      .banner {
+        height:50vh;
+      }
+      .banner_ad {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .product_list li{
+        width: 48%;
+        margin-bottom: 3%;
+      }
+      .product_category_list li {
+        width: 48%;
+        margin-bottom: 3%;
+      }
+      .news_list li {
+        width: 96%;
+        margin-bottom: 5%;
+      }
+        .DM_block {
+          height: 50vh;
+          background-position: 65% 50%;
+        }
+     }
+     @media(max-width:414px) {
+        .banner_ad .ad_prefix span {
+          font-size: 24px;
+          color:#ffffff;
+          border-top:3px double #ffffff;
+          border-bottom:3px double #ffffff;
+          font-family: 'Roboto', sans-serif;
+        }
+        .banner_ad {
+          padding: 0 20px;
+        }
+        .banner_ad .ad_main {
+          font-size: 24px;
+          color:#ffffff;
+          margin-bottom: 30px;
+          font-family: 'Noto Sans TC', sans-serif;
+          letter-spacing: 1.5px;
+        }
+        .banner_ad .ad_btn {
+          border:1px solid #ffffff;
+          padding: 6px 12px;
+          color:#ffffff;
+          text-decoration: none;
+          transition: .3s all;
+          letter-spacing: 1px;
+          font-family: 'Noto Sans TC', sans-serif;
+          letter-spacing: 1px;
+          font-size: 14px;
+        }
+        .block_title {
+          font-size: 36px;
+        }
+        .new_arrival {
+          padding: 25px 0;
+        }
+        .block_title {
+          padding-bottom: 25px;
+        }
+        .product_list li img {
+          height:300px;
+        }
+        .ribbon .ribbon_content {
+          width: 225px;
+        }
+        .ribbon .ribbon_content {
+          padding: 10px 0;
+        }
+        .ribbon .ribbon_content .ribbon_border {
+          padding: 5px 70px;
+        }
+        .DM_block {
+          height: 50vh;
+          background-position: 65% 50%;
+        }
+        .news_block {
+          padding: 50px 25px;
+        }
+        .news_list li .post_content h3 {
+          font-size: 18px;
+        }
+        .news_list li .post_content .excerpt {
+          font-size: 16px;
+        }
+        .product_category_list li a {
+          height:300px;
+        }
+     }
 </style>

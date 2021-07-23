@@ -12,10 +12,10 @@
           <li>
             <router-link to="/blog/all">Blog</router-link>
           </li>
-          <li>About</li>
+          <!-- <li>About</li> -->
           <li>
-            <router-link to="/cart" href="#" class="cart_link">
-               <span class="cart">{{cart_count}}</span>
+            <router-link to="/cart" href="#" class="cart_link" >
+               <span class="cart" :class="{ 'fill' : !textDark }">{{cart_count}}</span>
             </router-link>
           </li>
         </ul>
@@ -25,7 +25,10 @@
 <script>
 export default {
   props: {
-    textDark: Boolean,
+    textDark: {
+      type: Boolean,
+      Default: false
+    },
     updateCart: {
       type: Boolean,
       Default: false
@@ -122,6 +125,10 @@ export default {
     letter-spacing: inherit;
     font-size: inherit;
   }
+  .cart_link .cart.fill{
+    background: #fe5252;
+    color:#ffffff;
+  }
   .cart_link:hover .cart{
     background: #fe5252;
     color:#ffffff;
@@ -154,5 +161,14 @@ export default {
     width:12px;
     top:-8px;
     border-color:#fe5252;
+  }
+  @media(max-width:414px) {
+    .logo {
+      font-size: 36px;
+    }
+    .header .header_menu li {
+      font-size: 16px;
+      padding: 0 10px;
+    }
   }
 </style>

@@ -118,13 +118,18 @@ export default {
 <style scoped>
   .wrapper {
     display: flex;
-    padding:75px 0
+    padding-top:75px;
+    padding-bottom:75px;
+    flex-wrap: wrap;
+    font-family: 'Noto Sans TC', sans-serif;
+    letter-spacing: 1px;
   }
   .content {
     width: 75%;
   }
   .post_list {
     margin: 0;
+    padding: 0;
   }
   .post_list li {
     list-style: none;
@@ -134,6 +139,7 @@ export default {
       display: block;
       height:350px;
       background-size: cover;
+      background-position:center ;
       margin-bottom: 20px;
       position: relative;
   }
@@ -164,10 +170,6 @@ export default {
   }
   .post_list li h3 a:hover {
       color:#fe5252;
-  }
-  .post_info_container {
-    /* border:1px solid #f1f1f1; */
-    /* padding: 10px; */
   }
 .post_info {
   border-top:1px solid #f1f1f1;
@@ -200,5 +202,43 @@ export default {
 }
 .read_more a:hover {
   color:#fe5252;
+}
+@media(max-width:768px) {
+  /* .content {
+    width: 100%;
+  } */
+  .post_list li .thumbnail {
+    /* height:250px */
+  }
+  .post_list li h3 {
+    /* font-size: 24px; */
+  }
+  .post_info_container {
+    /* padding-bottom:20px ;
+    border-bottom: 1px solid #e9e9e9; */
+  }
+}
+@media(max-width:414px) {
+  .wrapper {
+    padding-top:35px;
+    padding-bottom:35px;
+    flex-direction: column-reverse;
+  }
+  .content {
+    width: 100%;
+  }
+  .post_list li .thumbnail {
+    height:250px
+  }
+  .post_list li h3 {
+    font-size: 24px;
+  }
+  .post_info_container {
+    padding-bottom:20px ;
+    border-bottom: 1px solid #e9e9e9;
+  }
+  .post_list li {
+    padding: 10px;
+  }
 }
 </style>

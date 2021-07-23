@@ -26,6 +26,14 @@
                 </div>
                </div>
                <div v-html="post.content" class="post_content"></div>
+               <h4 class="share_this_post_title">分享這篇文章</h4>
+               <div class="soical_media_container">
+                  <a target="_blank" style="background-image:url('https://i.imgur.com/sUM6rZ1.png')" :href="`https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`"></a>
+                  <a target="_blank" style="background-image:url('https://i.imgur.com/rxHpEdl.png')" :href="`http://www.twitter.com/share?url=${pageUrl}`"></a>
+                  <a target="_blank" style="background-image:url('https://i.imgur.com/i9i9Hpf.png')" :href="`https://t.me/share/url?url=${pageUrl}&text=hey! check this out`"></a>
+                  <a target="_blank" style="background-image:url('https://i.imgur.com/mQ6bpWS.png')" :href="`https://api.whatsapp.com/send?text=${pageUrl}`"></a>
+                  <a style="background-image:url('https://i.imgur.com/jMyZwmb.png')" href="#"></a>
+               </div>
            </div>
           <Sidebar :posts="post_list"></Sidebar>
       </div>
@@ -45,7 +53,8 @@ export default {
       path: process.env.VUE_APP_PATH,
       url: process.env.VUE_APP_API,
       post: {},
-      post_list: {}
+      post_list: {},
+      pageUrl: ''
     }
   },
   methods: {
@@ -97,6 +106,7 @@ export default {
   created () {
     this.getPost()
     this.getPostList()
+    this.pageUrl = document.location.href
   },
   components: {
     Header, Footer, Sidebar, Loading
@@ -106,8 +116,10 @@ export default {
 
 <style scoped>
 .wrapper {
-  margin-top: 70px;
+  padding-top: 70px;
+  padding-bottom: 70px;
   display: flex;
+  flex-wrap: wrap;
 }
 .content {
   width: 75%;
@@ -141,9 +153,54 @@ export default {
 .post_info .info_group span {
   margin-right: 5px;
 }
+.post_content {
+  margin-bottom: 15px;
+   border-bottom: 1px solid #e9e9e9;
+}
+.share_this_post_title {
+  font-family: 'Noto Sans TC', sans-serif;
+  border-left:3px solid #fe5252;
+  padding-left: 16px;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+.soical_media_container{
+  /* border-top:1px solid #e9e9e9; */
+  padding-top:5px;
+}
+.soical_media_container {
+  display: flex;
+}
+.soical_media_container a{
+  width: 30px;
+  height:30px;
+  background-size: contain;
+  margin-right: 15px;
+  transition: all .3s;
+}
+.soical_media_container a:hover {
+  opacity: 0.5;
+}
 img{
   width: 31%;
   margin: 0 1%;
   object-fit: cover;
+}
+@media(max-width:414px) {
+  .wrapper {
+    padding-top: 35px;
+    padding-bottom: 35px;
+  }
+  .content {
+    width: 100%;
+    padding: 10px;
+  }
+  .content h2 {
+    font-size: 24px;
+  }
+  .share_this_post_title {
+    font-size: 24px;
+    font-weight: bold;
+  }
 }
 </style>

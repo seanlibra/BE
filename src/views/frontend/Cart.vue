@@ -17,75 +17,77 @@
               </li>
           </ul>
           <h3 class="list_title">購物車清單</h3>
-          <table class="cart_list_table">
-              <thead>
-                  <tr>
-                      <th></th>
-                      <th>商品</th>
-                      <th>單價</th>
-                      <th>數量</th>
-                      <th>小計</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr v-for="item in list" :key="item.id">
-                      <td>
-                          <div class="product_delete_container">
-                           <a @click.prevent="deleteCartsItem(item)" href="#">
-                              <span class="material-icons">close</span>
-                          </a>
+          <div class="table_scroll_bar_container">
+            <table class="cart_list_table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>商品</th>
+                        <th>單價</th>
+                        <th>數量</th>
+                        <th>小計</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in list" :key="item.id">
+                        <td>
+                            <div class="product_delete_container">
+                            <a @click.prevent="deleteCartsItem(item)" href="#">
+                                <span class="material-icons">close</span>
+                            </a>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="product_thumbnail">
+                              <img :src="item.product.imageUrl">
+                              <h3>{{item.product.title}}</h3>
+                            </div>
+                        </td>
+                        <td>
+                          NT$ {{item.product.price}}
+                        </td>
+                        <td>
+                            <div class="product_qty">
+                                  <button @click="updateCartItemQty(item,item.qty - 1 )">-</button>
+                                  <input @blur="updateCartItemQty(item,item.qty)" min="1" max="99" type="number" v-model.number="item.qty">
+                                  <button @click="updateCartItemQty(item,item.qty + 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                          <div class="single_product_price_container">
+                            <div class="single_origin_price">
+                              <span :class="{ coupon_yes : item.coupon }" class="price">
+                                NT$ {{item.total}}
+                              </span>
+                              <span v-if="item.coupon" class="coupon text-success"> {{100 - item.coupon.percent}}% off</span>
+                            </div>
+                            <div v-if="item.coupon"  class="single_final_price">
+                              NT$ {{Math.floor(item.final_total)}}
+                            </div>
                           </div>
-                      </td>
-                      <td>
-                          <div class="product_thumbnail">
-                            <img :src="item.product.imageUrl">
-                            <h3>{{item.product.title}}</h3>
-                          </div>
-                      </td>
-                      <td>
-                        NT$ {{item.product.price}}
-                      </td>
-                      <td>
-                          <div class="product_qty">
-                                <button @click="updateCartItemQty(item,item.qty - 1 )">-</button>
-                                <input @blur="updateCartItemQty(item,item.qty)" min="1" max="99" type="number" v-model.number="item.qty">
-                                <button @click="updateCartItemQty(item,item.qty + 1)">+</button>
-                          </div>
-                      </td>
-                      <td>
-                        <div class="single_product_price_container">
-                          <div class="single_origin_price">
-                            <span :class="{ coupon_yes : item.coupon }" class="price">
-                              NT$ {{item.total}}
-                            </span>
-                            <span v-if="item.coupon" class="coupon text-success"> {{100 - item.coupon.percent}}% off</span>
-                          </div>
-                          <div v-if="item.coupon"  class="single_final_price">
-                            NT$ {{Math.floor(item.final_total)}}
-                          </div>
-                        </div>
-                      </td>
-                  </tr>
-              </tbody>
-          </table>
-          <div class="cart_total">
-              <div class="coupon_container">
-                  <input :class="{ coupon_active : coupon == 2 }" v-model="couponCode">
-                  <a class="coupon_no" v-if="coupon == 0" @click.prevent="useCoupon" href="#">使用優惠券</a>
-                  <a class="coupon_some" v-else-if="coupon == 1" @click.prevent="useCoupon" href="#">部分已套用優惠券</a>
-                  <a class="coupon_yes" v-else @click.prevent="useCoupon" href="#">已套用優惠券</a>
-              </div>
-              <div class="total_num">
-                  <span>總計：</span>
-                  <div class="price_container">
-                      <span :class="{ coupon_yes : cart_info.data.total !== cart_info.data.final_total }" class="total">$NT {{cart_info.data.total}}</span>
-                      <span class="final_total" v-if="cart_info.data.total !== cart_info.data.final_total">$NT {{ Math.floor(cart_info.data.final_total)}}</span>
-                  </div>
-              </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
           </div>
-          <div class="go_checkout">
-              <router-link  v-if="list.length > 0" to="/checkout">前往填寫資料</router-link>
-          </div>
+            <div class="cart_total">
+                <div class="coupon_container">
+                    <input :class="{ coupon_active : coupon == 2 }" v-model="couponCode">
+                    <a class="coupon_no" v-if="coupon == 0" @click.prevent="useCoupon" href="#">使用優惠券</a>
+                    <a class="coupon_some" v-else-if="coupon == 1" @click.prevent="useCoupon" href="#">部分已套用優惠券</a>
+                    <a class="coupon_yes" v-else @click.prevent="useCoupon" href="#">已套用優惠券</a>
+                </div>
+                <div class="total_num">
+                    <span>總計：</span>
+                    <div class="price_container">
+                        <span :class="{ coupon_yes : cart_info.data.total !== cart_info.data.final_total }" class="total">$NT {{cart_info.data.total}}</span>
+                        <span class="final_total" v-if="cart_info.data.total !== cart_info.data.final_total">$NT {{ Math.floor(cart_info.data.final_total)}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="go_checkout">
+                <router-link  v-if="list.length > 0" to="/checkout">前往填寫資料</router-link>
+            </div>
       </div>
       <Loading v-if="loading"></Loading>
       <Footer></Footer>
@@ -237,13 +239,16 @@ export default {
   }
   .wrapper {
     /* display: flex; */
-    padding:75px 0;
+    padding-top:75px;
+    padding-bottom:75px;
+    font-family: 'Noto Sans TC', sans-serif;
   }
   .list_title {
       text-align: center;
       font-size: 36px;
       letter-spacing: 1px;
       margin-bottom: 30px;
+      font-weight: bold;
   }
   /*timeline*/
   .time_line {
@@ -251,6 +256,7 @@ export default {
     justify-content: center;
     margin: 0;
     margin-bottom: 50px;
+    padding: 0;
     /* width:100%; */
   }
   .time_line .step {
@@ -428,6 +434,7 @@ export default {
       padding-right: 50px;
       display: flex;
       justify-content: flex-end;
+      flex-wrap: wrap;
       align-items: center;
   }
   .coupon_container {
@@ -502,5 +509,63 @@ export default {
   }
   .price_container .final_total {
     font-weight: bold;
+  }
+  @media(max-width:768px) {
+    .time_line .step {
+      margin: 0 25px;
+    }
+  }
+  @media(max-width:414px) {
+    .wrapper {
+      padding-top: 35px;
+      padding-bottom: 35px;
+    }
+    .time_line .step {
+      margin: 0 5px;
+    }
+    .time_line .step .circle {
+      display: none;
+    }
+    .time_line .step {
+      margin: 0 25px;
+      font-size: 14px;
+      padding:17px 10px;
+    }
+    .list_title {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .table_scroll_bar_container {
+      overflow-x: scroll;
+      width:100%
+    }
+    .coupon_container {
+      margin-right: 0;
+    }
+    .cart_total {
+      padding-right: 20px;
+    }
+    .total_num {
+      margin-top: 20px;
+    }
+    .product_thumbnail img {
+      margin-right: 15px;
+    }
+    .product_thumbnail h3 {
+      font-size: 14px;
+      line-height: 18px;
+    }
+    .coupon_container a{
+      padding:9px 10px;
+      width: 50%;
+    }
+    .coupon_container input {
+      width: 50%;
+    }
+  }
+  @media(max-width:375px) {
+    .time_line {
+      display: none;
+    }
   }
 </style>

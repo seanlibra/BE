@@ -12,9 +12,9 @@
               </li>
             </ul>
           </div>
-          <div class="sidebar_group">
+          <!-- <div class="sidebar_group">
             <h2>熱門商品</h2>
-          </div>
+          </div> -->
         </div>
 </template>
 
@@ -101,6 +101,7 @@ export default {
  .sidebar {
     width: 23%;
     margin: 0 1%;
+     font-family: 'Noto Sans TC', sans-serif;
   }
   .sidebar_group h2{
     font-size: 18px;
@@ -146,5 +147,14 @@ export default {
   }
   .product_category_list li a:hover {
     color:#fe5252;
+  }
+  @media (max-width:414px) {
+    .sidebar {
+      width: 100%;
+    }
+    .sidebar_group h2 {
+      font-size: 24px;
+      font-weight: bold;
+    }
   }
 </style>

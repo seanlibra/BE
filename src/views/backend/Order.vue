@@ -44,20 +44,18 @@
           <li class="page-item" :class="{ disabled : !pagination.has_next }"><a @click.prevent="getOrders( pagination.current_page + 1 )" class="page-link" href="#">Next</a></li>
         </ul>
       </nav>
-    <OrderModal @emit-update="getOrders" ref="orderModal" :order="tempOrder"></OrderModal>
-    <OrderDelModal @emit-delete="getOrders" ref="orderDelModal" :order="tempOrder" :isall="isAll"></OrderDelModal>
+    <OrderModal @bubble-open="bubbleTrigger" @emit-update="getOrders" ref="orderModal" :order="tempOrder"></OrderModal>
+    <OrderDelModal @bubble-open="bubbleTrigger" @emit-delete="getOrders" ref="orderDelModal" :order="tempOrder" :isall="isAll"></OrderDelModal>
+    <Bubble ref="bubble" :bubbleText="bubbleText"></Bubble>
 </template>
 
 <script>
-import OrderModal from '@/components/OrderModal.vue'
-import OrderDelModal from '@/components/OrderDelModal.vue'
+import OrderModal from '@/components/backend/OrderModal.vue'
+import OrderDelModal from '@/components/backend/OrderDelModal.vue'
 export default {
   data () {
     return {
       list: [],
-      path: process.env.VUE_APP_PATH,
-      url: process.env.VUE_APP_API,
-      token: '',
       pagination: {},
       tempOrder: {
         user: {
@@ -67,25 +65,21 @@ export default {
           tel: ''
         }
       },
-      isAll: false
+      isAll: false,
+      bubbleText: ''
     }
   },
   methods: {
     getOrders (page = 1) {
       var vm = this
       vm.$store.commit('startLoading', true)
-      this.$http.get(`${vm.url}/api/${vm.path}/admin/orders?page=${page}`, {
-        headers: {
-          Authorization: vm.token
-        }
-      })
+      this.$http.get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/orders?page=${page}`)
         .then(function (res) {
           console.log(res)
           if (res.data.success) {
             vm.list = res.data.orders
             vm.pagination = res.data.pagination
             vm.$store.commit('startLoading', false)
-            // console.log(res)
           }
         })
         .catch(function (err) {
@@ -109,16 +103,14 @@ export default {
     DelAllOrder () {
       this.$refs.orderDelModal.openModal()
       this.isAll = true
+    },
+    bubbleTrigger (message) {
+      var vm = this
+      vm.bubbleText = message
+      vm.$refs.bubble.bubbleACtive()
     }
   },
-  computed: {
-    // created_time: function () {
-    //   return this.list
-    // }
-  },
   created () {
-    const token = document.cookie.replace(/(?:(?:^|.*;\s*)vue_class\s*=\s*([^;]*).*$)|^.*$/, '$1')
-    this.token = token
     this.getOrders()
   },
   components: {

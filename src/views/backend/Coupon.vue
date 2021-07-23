@@ -48,13 +48,14 @@
           <li class="page-item" :class="{ disabled : !pagination.has_next }"><a @click.prevent="getCoupons( pagination.current_page + 1 )" class="page-link" href="#">Next</a></li>
         </ul>
       </nav>
-    <CouponModal @emit-update="getCoupons" :isnew="isNew" :coupon="tempCoupon" ref="couponModal"></CouponModal>
-    <CouponDelModal @emit-update="getCoupons  " :isall="isAll" :coupon="tempCoupon" ref="couponDelModal"></CouponDelModal>
+    <CouponModal @bubble-open="bubbleTrigger" @emit-update="getCoupons" :isnew="isNew" :coupon="tempCoupon" ref="couponModal"></CouponModal>
+    <CouponDelModal @bubble-open="bubbleTrigger" @emit-update="getCoupons  " :isall="isAll" :coupon="tempCoupon" ref="couponDelModal"></CouponDelModal>
+     <Bubble ref="bubble" :bubbleText="bubbleText"></Bubble>
 </template>
 
 <script>
-import CouponModal from '@/components/CouponModal.vue'
-import CouponDelModal from '@/components/CouponDelModal.vue'
+import CouponModal from '@/components/backend/CouponModal.vue'
+import CouponDelModal from '@/components/backend/CouponDelModal.vue'
 export default {
   data () {
     return {
@@ -63,19 +64,14 @@ export default {
       isNew: false,
       isAll: false,
       pagination: {},
-      path: process.env.VUE_APP_PATH,
-      url: process.env.VUE_APP_API
+      bubbleText: ''
     }
   },
   methods: {
     getCoupons (page = 1) {
       var vm = this
       vm.$store.commit('startLoading', true)
-      vm.$http.get(`${vm.url}/api/${vm.path}/admin/coupons?page=${page}`, {
-        headers: {
-          Authorization: vm.token
-        }
-      })
+      vm.$http.get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/coupons?page=${page}`)
         .then(function (res) {
           if (res.data.success) {
             vm.coupons = res.data.coupons
@@ -114,11 +110,14 @@ export default {
     fix_time_format (time) {
       const localDate = new Date(time * 1000)
       return localDate.toLocaleDateString()
+    },
+    bubbleTrigger (message) {
+      var vm = this
+      vm.bubbleText = message
+      vm.$refs.bubble.bubbleACtive()
     }
   },
   created () {
-    const token = document.cookie.replace(/(?:(?:^|.*;\s*)vue_class\s*=\s*([^;]*).*$)|^.*$/, '$1')
-    this.token = token
     this.getCoupons()
   },
   components: {

@@ -115,6 +115,7 @@ export default {
   .content {
     display: flex;
     padding-top:70px;
+    flex-wrap: wrap;
   }
   .product_list {
     display: flex;
@@ -217,5 +218,22 @@ export default {
   }
   .product_list .onsale_price {
     color:#fe5252;
+  }
+  @media (max-width:768px) {
+    .product_list li {
+      width: 48%;
+    }
+  }
+  @media (max-width:414px) {
+    .content {
+      padding-top: 35px;
+    }
+    .product_list {
+      width: 100%;
+      padding: 15px 0;
+    }
+    .product_list li img {
+      height:250px;
+    }
   }
 </style>

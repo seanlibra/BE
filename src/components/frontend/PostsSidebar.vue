@@ -64,6 +64,8 @@ export default {
   padding-left:16px;
   margin-bottom: 20px;
   font-family: inherit;
+  letter-spacing: 1px;
+  font-family: 'Noto Sans TC', sans-serif;
 }
 .tags_list a{
   text-decoration: none;
@@ -103,5 +105,16 @@ export default {
 .newsletter button:hover {
   background: #ffffff;
   color:#fe5252;
+}
+@media(max-width:414px) {
+  .posts_sidebar {
+    width: 100%;
+    border-left:0;
+    padding:10px
+  }
+  .sidebar_item_group h3 {
+    font-size: 24px;
+    font-weight: bold;
+  }
 }
 </style>

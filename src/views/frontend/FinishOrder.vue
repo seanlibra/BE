@@ -128,13 +128,16 @@ export default {
 <style scoped>
   .wrapper {
     /* display: flex; */
-    padding:75px 0;
+    padding-top:75px;
+    padding-bottom: 75px;
+    font-family: 'Noto Sans TC', sans-serif;
   }
   .time_line {
     display: flex;
     justify-content: center;
     margin: 0;
     margin-bottom: 50px;
+    padding:0;
     /* width:100%; */
   }
   .time_line .step {
@@ -203,6 +206,10 @@ export default {
   }
   .list_title {
       text-align: center;
+      font-size: 36px;
+      letter-spacing: 1px;
+      margin-bottom: 30px;
+      font-weight: bold;
   }
   .order_container {
     display: flex;
@@ -251,5 +258,47 @@ export default {
      background: #198754;
      padding:8px 24px;
      color:#ffffff;
+   }
+   @media(max-width:768px) {
+    .time_line .step {
+      margin: 0 25px;
+    }
+    .order {
+      background: #ffefea;
+      width:60%;
+      padding: 20px;
+    }
+   }
+   @media(max-width:414px) {
+    .wrapper {
+      padding-top: 35px;
+      padding-bottom: 35px;
+    }
+    .time_line .step {
+      margin: 0 5px;
+    }
+    .time_line .step .circle {
+      display: none;
+    }
+    .time_line .step {
+      margin: 0 25px;
+      font-size: 14px;
+      padding:17px 10px;
+    }
+    .order_detail_block .order {
+      padding:0px;
+    }
+    .list_title {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .order {
+      width:100%;
+    }
+   }
+   @media(max-width:375px) {
+    .time_line {
+      display: none;
+    }
    }
 </style>

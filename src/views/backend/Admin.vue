@@ -34,22 +34,19 @@
 export default {
   data () {
     return {
-      path: process.env.VUE_APP_PATH,
-      url: process.env.VUE_APP_API,
-      token: ''
     }
   },
   methods: {
     logOut () {
       var vm = this
       vm.$store.commit('startLoading', true)
-      vm.$http.defaults.headers.common.Authorization = this.token
-      vm.$http.post(`${vm.url}/logout`)
+      vm.$http.post(`${process.env.VUE_APP_API}/logout`)
         .then(function (res) {
           if (res.data.success) {
             console.log(res.data.message)
             vm.$store.commit('startLoading', false)
             alert(res.data.message)
+            document.cookie = 'vue_class=; expires=; path=/'
             vm.$router.push('/login')
           } else {
             alert(res.data.message)
@@ -62,9 +59,8 @@ export default {
     checkLogin () {
       var vm = this
       console.log('檢查登入中')
-      vm.$http.defaults.headers.common.Authorization = this.token
       vm.$store.commit('startLoading', true)
-      vm.$http.post(`${vm.url}/api/user/check`)
+      vm.$http.post(`${process.env.VUE_APP_API}/api/user/check`)
         .then(function (res) {
           console.log(res)
           if (res.data.success) {
@@ -89,7 +85,7 @@ export default {
   },
   created () {
     const token = document.cookie.replace(/(?:(?:^|.*;\s*)vue_class\s*=\s*([^;]*).*$)|^.*$/, '$1')
-    this.token = token
+    this.$http.defaults.headers.common.Authorization = token
     this.checkLogin()
   }
 }

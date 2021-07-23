@@ -35,7 +35,8 @@
             </tr>
         </tbody>
     </table>
-    <PostModal @delete="tempPost = {} " @update="getPosts" :isnew="isNew" ref="postModal" :edit-id="tempPost.id"></PostModal>
+    <PostModal @bubble-open="bubbleTrigger" @delete="tempPost = {} " @update="getPosts" :isnew="isNew" ref="postModal" :edit-id="tempPost.id"></PostModal>
+    <Bubble ref="bubble" :bubbleText="bubbleText"></Bubble>
 </template>
 
 <script>
@@ -43,13 +44,11 @@ import PostModal from '@/components/backend/PostModal.vue'
 export default {
   data () {
     return {
-      path: process.env.VUE_APP_PATH,
-      url: process.env.VUE_APP_API,
-      token: '',
       list: [],
       pagination: {},
       tempPost: {},
-      isNew: false
+      isNew: false,
+      bubbleText: ''
     }
   },
   methods: {
@@ -68,11 +67,7 @@ export default {
     getPosts (page = 1) {
       var vm = this
       vm.$store.commit('startLoading', true)
-      this.$http.get(`${vm.url}/api/${vm.path}/admin/articles?page=${page}`, {
-        headers: {
-          Authorization: vm.token
-        }
-      })
+      this.$http.get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/articles?page=${page}`)
         .then(function (res) {
           console.log(res)
           if (res.data.success) {
@@ -89,14 +84,17 @@ export default {
     fix_time_format (time) {
       const localDate = new Date(time * 1000)
       return localDate.toLocaleDateString()
+    },
+    bubbleTrigger (message) {
+      var vm = this
+      vm.bubbleText = message
+      vm.$refs.bubble.bubbleACtive()
     }
   },
   components: {
     PostModal
   },
   created () {
-    const token = document.cookie.replace(/(?:(?:^|.*;\s*)vue_class\s*=\s*([^;]*).*$)|^.*$/, '$1')
-    this.token = token
     this.getPosts()
   }
 }

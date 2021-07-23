@@ -82,10 +82,7 @@ export default {
   data () {
     return {
       detail: {},
-      modalStatus: false,
-      path: process.env.VUE_APP_PATH,
-      url: process.env.VUE_APP_API,
-      token: ''
+      modalStatus: false
     }
   },
   methods: {
@@ -99,14 +96,10 @@ export default {
       const vm = this
       var readToAdd = { data: this.detail }
       vm.$store.commit('startLoading', true)
-      vm.$http.post(`${vm.url}/api/${vm.path}/admin/product`, readToAdd, {
-        headers: {
-          Authorization: vm.token
-        }
-      })
+      vm.$http.post(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product`, readToAdd)
         .then(function (res) {
           if (res.data.success) {
-            alert(res.data.message)
+            vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
             vm.$emit('emitAdd')
             vm.leaveModal()
@@ -121,14 +114,10 @@ export default {
       vm.$store.commit('startLoading', true)
       var readyToUpdate = { data: vm.detail }
       console.log(vm.detail)
-      vm.$http.put(`${vm.url}/api/${vm.path}/admin/product/${vm.detail.id}`, readyToUpdate, {
-        headers: {
-          Authorization: vm.token
-        }
-      })
+      vm.$http.put(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${vm.detail.id}`, readyToUpdate)
         .then(function (res) {
           if (res.data.success) {
-            alert(res.data.message)
+            vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
             vm.$emit('emitUpdate')
             vm.leaveModal()
@@ -141,12 +130,6 @@ export default {
           console.log(err)
         })
     }
-  },
-  mounted () {
-  },
-  created () {
-    const token = document.cookie.replace(/(?:(?:^|.*;\s*)vue_class\s*=\s*([^;]*).*$)|^.*$/, '$1')
-    this.token = token
   },
   watch: {
     product () {

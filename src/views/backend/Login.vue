@@ -31,8 +31,6 @@
 export default {
   data () {
     return {
-      path: process.env.VUE_APP_PATH,
-      url: process.env.VUE_APP_API,
       username: '',
       password: ''
     }
@@ -45,16 +43,16 @@ export default {
       }
       var vm = this
       vm.$store.commit('startLoading', true)
-      vm.$http.post(`${vm.url}/admin/signin`, user)
+      vm.$http.post(`${process.env.VUE_APP_API}/admin/signin`, user)
         .then(function (res) {
           if (res.data.success) {
-            console.log(res.data.message)
+            // console.log(res.data.message)
             const token = res.data.token
             const expired = res.data.expired
             document.cookie = `vue_class=${token}; expires=${new Date(expired)};path=/`
             vm.$store.commit('startLoading', false)
             alert(res.data.message)
-            vm.$router.push('admin')
+            vm.$router.push('/admin')
           } else {
             vm.$store.commit('startLoading', false)
             alert(res.data.message)

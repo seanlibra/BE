@@ -36,10 +36,10 @@
                         <router-link :to="`/shop/${product.category}`">{{product.category}}</router-link>
                     </div>
                     <div class="soical_media_container">
-                      <a style="background-image:url('https://i.imgur.com/sUM6rZ1.png')" href="#"></a>
-                      <a style="background-image:url('https://i.imgur.com/rxHpEdl.png')" href="#"></a>
-                      <a style="background-image:url('https://i.imgur.com/i9i9Hpf.png')" href="#"></a>
-                      <a style="background-image:url('https://i.imgur.com/mQ6bpWS.png')" href="#"></a>
+                      <a target="_blank" style="background-image:url('https://i.imgur.com/sUM6rZ1.png')" :href="`https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`"></a>
+                      <a target="_blank" style="background-image:url('https://i.imgur.com/rxHpEdl.png')" :href="`http://www.twitter.com/share?url=${pageUrl}`"></a>
+                      <a target="_blank" style="background-image:url('https://i.imgur.com/i9i9Hpf.png')" :href="`https://t.me/share/url?url=${pageUrl}&text=hey! check this out`"></a>
+                      <a target="_blank" style="background-image:url('https://i.imgur.com/mQ6bpWS.png')" :href="`https://api.whatsapp.com/send?text=${pageUrl}`"></a>
                       <a style="background-image:url('https://i.imgur.com/jMyZwmb.png')" href="#"></a>
                     </div>
                 </div>
@@ -68,7 +68,8 @@ export default {
       },
       count: 1,
       cartUpdteTrigger: false,
-      bubbleText: ''
+      bubbleText: '',
+      pageUrl: ''
     }
   },
   methods: {
@@ -118,6 +119,7 @@ export default {
   },
   created () {
     this.getProductDetail()
+    this.pageUrl = document.location.href
   }
 }
 </script>
@@ -135,8 +137,11 @@ input[type=number] {
 }
 .wrapper {
   display:flex;
-  padding:75px 0;
+  padding-top:75px;
+  padding-bottom: 75px;
   position: relative;
+  flex-wrap: wrap;
+  font-family: 'Noto Sans TC', sans-serif;
 }
 .content {
    width: 73%;
@@ -144,6 +149,7 @@ input[type=number] {
 }
 .product_detail {
   display:flex;
+  flex-wrap: wrap;
 }
 .product_detail > div {
   width: 50%;
@@ -164,7 +170,6 @@ input[type=number] {
 .product_title {
   font-size: 30px;
   letter-spacing: 1px;
-  font-family: 'Noto Sans TC', sans-serif;
   padding-bottom: 20px;
   border-bottom: 1px solid #f1f1f1;
 }
@@ -237,7 +242,6 @@ input[type=number] {
 }
 .product_category_container {
   padding: 20px 0;
-  font-family: 'Noto Sans TC', sans-serif;
 }
 .product_category_container span {
   font-size: 16px;
@@ -319,5 +323,40 @@ input[type=number] {
       right: -25px;
       top: 30px;
       transform: rotate(-45deg);
+}
+@media(max-width:1024px) {
+  .product_img {
+    height:450px;
+  }
+}
+@media (max-width:768px) {
+  .wrapper {
+    padding-top: 35px;
+    flex-direction: column-reverse;
+  }
+  .content {
+    width: 100%;
+  }
+  .product_detail > div {
+    padding: 10px;
+  }
+  .product_img {
+    height:350px;
+  }
+  .cart_tools .add_to_cart {
+    padding: 6px 10px;
+  }
+}
+@media(max-width:414px) {
+  .wrapper {
+    padding-top: 35px;
+    padding-bottom: 35px;
+  }
+  .content {
+    margin-bottom: 30px;
+  }
+  .product_detail > div {
+    width: 100%;
+  }
 }
 </style>

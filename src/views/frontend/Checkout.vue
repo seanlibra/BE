@@ -149,7 +149,7 @@ export default {
         .then(function (res) {
           if (res.data.success) {
             console.log(res)
-            alert(res.data.message)
+            // alert(res.data.message)
             var id = res.data.orderId
             vm.$router.push(`/finishorder/${id}`)
             // vm.$refs.form.resetForm()
@@ -176,14 +176,16 @@ export default {
 
 <style scoped>
   .wrapper {
-    /* display: flex; */
-    padding:75px 0;
+    padding-top:75px;
+    padding-bottom:75px;
+    font-family: 'Noto Sans TC', sans-serif;
   }
   .time_line {
     display: flex;
     justify-content: center;
     margin: 0;
     margin-bottom: 50px;
+    padding:0;
     /* width:100%; */
   }
   .time_line .step {
@@ -252,7 +254,10 @@ export default {
   }
   .list_title {
       text-align: center;
-      margin-bottom: 50px;
+      font-size: 36px;
+      letter-spacing: 1px;
+      margin-bottom: 30px;
+      font-weight: bold;
   }
   .ckeckout_form {
       border:1px solid #e4e4e4;
@@ -271,6 +276,7 @@ export default {
   }
   .content {
     display: flex;
+    flex-wrap: wrap;
     padding:0 10%;
   }
   .client_info_block {
@@ -281,12 +287,13 @@ export default {
     width: 48%;
     margin: 0 1%;
     background: #ffefea;
-    padding: 10px;
+    padding: 15px;
   }
   .order_title {
-    font-size: 24px;
+    font-size: 18px;
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
+    font-weight: bold;
   }
   .order_detail_block .order {
     /* border:1px solid #e4e4e4; */
@@ -355,5 +362,52 @@ export default {
   }
   .price_container .final_total {
     font-weight: bold;
+  }
+  @media(max-width:768px) {
+    .content {
+      flex-direction: column-reverse;
+    }
+    .client_info_block {
+      width:100%;
+    }
+    .order_detail_block {
+      width: 100%;
+      margin-bottom: 30px;
+    }
+    .time_line .step {
+      margin: 0 25px;
+    }
+    .content {
+      padding:0;
+    }
+  }
+  @media(max-width:414px) {
+    .wrapper {
+      padding-top: 35px;
+      padding-bottom: 35px;
+    }
+    .time_line .step {
+      margin: 0 5px;
+    }
+    .time_line .step .circle {
+      display: none;
+    }
+    .time_line .step {
+      margin: 0 25px;
+      font-size: 14px;
+      padding:17px 10px;
+    }
+    .order_detail_block .order {
+      padding:0px;
+    }
+    .list_title {
+      font-size: 24px;
+      font-weight: bold;
+    }
+  }
+  @media(max-width:375px) {
+    .time_line {
+      display: none;
+    }
   }
   </style>

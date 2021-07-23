@@ -60,35 +60,30 @@
         </ul>
       </nav>
     </div>
-     <ProductModal @emit-add="getProducts" @emit-update="getProducts" ref="productModal" :product="tempProduct" :is-new="isNew"></ProductModal>
-     <ProductDelModal @emit-del="getProducts" :product="tempProduct" ref="delProductModal"></ProductDelModal>
+     <ProductModal @bubble-open="bubbleTrigger" @emit-add="getProducts" @emit-update="getProducts" ref="productModal" :product="tempProduct" :is-new="isNew"></ProductModal>
+     <ProductDelModal @bubble-open="bubbleTrigger" @emit-del="getProducts" :product="tempProduct" ref="delProductModal"></ProductDelModal>
+     <Bubble ref="bubble" :bubbleText="bubbleText"></Bubble>
 </template>
 
 <script>
-import ProductModal from '@/components/ProductModal.vue'
-import ProductDelModal from '@/components/ProductDelModal.vue'
+import ProductModal from '@/components/backend/ProductModal.vue'
+import ProductDelModal from '@/components/backend/ProductDelModal.vue'
 
 export default {
   data () {
     return {
-      path: process.env.VUE_APP_PATH,
-      url: process.env.VUE_APP_API,
-      token: '',
       list: [],
       pagination: {},
       tempProduct: {},
-      isNew: false
+      isNew: false,
+      bubbleText: ''
     }
   },
   methods: {
     getProducts (page = 1) {
       var vm = this
       vm.$store.commit('startLoading', true)
-      this.$http.get(`${vm.url}/api/${vm.path}/admin/products?page=${page}`, {
-        headers: {
-          Authorization: vm.token
-        }
-      })
+      this.$http.get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/products?page=${page}`)
         .then(function (res) {
           console.log(res)
           if (res.data.success) {
@@ -120,11 +115,14 @@ export default {
       this.tempProduct = item
       const delProductModal = this.$refs.delProductModal
       delProductModal.openModal()
+    },
+    bubbleTrigger (message) {
+      var vm = this
+      vm.bubbleText = message
+      vm.$refs.bubble.bubbleACtive()
     }
   },
   created () {
-    const token = document.cookie.replace(/(?:(?:^|.*;\s*)vue_class\s*=\s*([^;]*).*$)|^.*$/, '$1')
-    this.token = token
     this.getProducts()
   },
   components: {
@@ -141,9 +139,6 @@ export default {
     height: 75px;
     width: 75px;
     object-fit: cover;
-}
-.single_product {
-  /* border:1px solid #000000; */
 }
 .product_list tbody tr td {
     padding: 5px;

@@ -132,7 +132,7 @@ export default {
             // vm.tempPost = res.data.article
             // vm.due_date = res.data.article.create_at
             vm.$store.commit('startLoading', false)
-            alert(res.data.message)
+            vm.$emit('bubbleOpen', res.data.message)
             vm.$emit('update')
             vm.leaveModal()
           } else {
@@ -161,7 +161,7 @@ export default {
       })
         .then(function (res) {
           if (res.data.success) {
-            alert(res.data.message)
+            vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
             vm.$emit('update')
             vm.leaveModal()

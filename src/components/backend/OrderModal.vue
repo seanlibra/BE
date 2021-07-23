@@ -105,8 +105,6 @@ export default {
   data () {
     return {
       modalStatus: false,
-      path: process.env.VUE_APP_PATH,
-      url: process.env.VUE_APP_API,
       tempOrder: {
         user: {
           name: '',
@@ -114,8 +112,7 @@ export default {
           address: '',
           tel: ''
         }
-      },
-      token: ''
+      }
     }
   },
   methods: {
@@ -123,15 +120,11 @@ export default {
       var vm = this
       var readyToUpdate = { data: vm.tempOrder }
       vm.$store.commit('startLoading', true)
-      vm.$http.put(`${vm.url}/api/${vm.path}/admin/order/${vm.tempOrder.id}`, readyToUpdate, {
-        headers: {
-          Authorization: vm.token
-        }
-      })
+      vm.$http.put(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/order/${vm.tempOrder.id}`, readyToUpdate)
         .then(function (res) {
           if (res.data.success) {
             vm.$emit('emit-update')
-            alert(res.data.message)
+            vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
             vm.leaveModal()
           }
@@ -163,10 +156,6 @@ export default {
     order () {
       this.tempOrder = JSON.parse(JSON.stringify(this.order))
     }
-  },
-  created () {
-    const token = document.cookie.replace(/(?:(?:^|.*;\s*)vue_class\s*=\s*([^;]*).*$)|^.*$/, '$1')
-    this.token = token
   }
 }
 </script>
