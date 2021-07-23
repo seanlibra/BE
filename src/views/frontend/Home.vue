@@ -147,13 +147,11 @@ export default {
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/products?page=${page}`)
         .then(function (res) {
-          // console.log(res)
           if (res.data.success) {
             vm.bubbleText = res.data.success
             vm.product_list = res.data.products
             vm.pagination = res.data.pagination
             vm.$store.commit('startLoading', false)
-            console.log(res)
           }
         })
         .catch(function (err) {
@@ -165,11 +163,9 @@ export default {
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/articles?page=${page}`)
         .then(function (res) {
-          // console.log(res)
           if (res.data.success) {
             vm.news_list = res.data.articles
             vm.$store.commit('startLoading', false)
-            console.log(res)
           }
         })
         .catch(function (err) {
@@ -218,7 +214,7 @@ export default {
   }
   .banner {
     height:800px;
-    background-image:url(https://i.imgur.com/WLxUw6c.jpg);
+    background-image:url(https://i.imgur.com/Z638T6B.jpg);
     background-repeat: no-repeat;
     background-size:cover;
     background-position: top;
@@ -519,11 +515,12 @@ export default {
      border:1px solid #f0eff0;
      padding: 15px;
      background: #ffffff;
+     min-height: 120px;
    }
     .news_list li .post_content h3 {
      text-align: center;
      font-size: 24px;
-     margin-bottom: 10px;
+     margin-bottom: 15px;
      font-family: 'Noto Sans TC', sans-serif;
    }
    .news_list li .post_content h3 a {
@@ -536,6 +533,8 @@ export default {
    }
     .news_list li .post_content .excerpt {
      font-size: 16px;
+     letter-spacing: 1px;
+     font-family: 'Noto Sans TC', sans-serif;
    }
     .news_list li .post_info {
       background: #f0eff0;

@@ -131,12 +131,10 @@ export default {
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/cart`)
         .then(function (res) {
-          // console.log(res)
           if (res.data.success) {
             vm.cartList = res.data.data.carts
             vm.cart_info = res.data
             vm.$store.commit('startLoading', false)
-            console.log(res)
           }
         })
         .catch(function (err) {

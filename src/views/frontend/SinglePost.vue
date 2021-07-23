@@ -54,15 +54,14 @@ export default {
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/articles?page=${page}`)
         .then(function (res) {
-          // console.log(res)
           if (res.data.success) {
             vm.post_list = res.data.articles
             vm.$store.commit('startLoading', false)
-            console.log(res)
           }
         })
         .catch(function (err) {
           console.log(err)
+          vm.$store.commit('startLoading', false)
         })
     },
     getPost () {
@@ -71,7 +70,6 @@ export default {
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/article/${id}`)
         .then(function (res) {
-          // console.log(res)
           if (res.data.success) {
             vm.post = res.data.article
             vm.$store.commit('startLoading', false)
@@ -80,6 +78,7 @@ export default {
         })
         .catch(function (err) {
           console.log(err)
+          vm.$store.commit('startLoading', false)
         })
     },
     fix_data_format () {
@@ -119,6 +118,7 @@ export default {
   width: 100%;
   height:400px;
   margin-bottom: 20px;
+  object-fit: cover;
 }
 .content h2 {
   letter-spacing: 1px;
@@ -140,5 +140,10 @@ export default {
 }
 .post_info .info_group span {
   margin-right: 5px;
+}
+img{
+  width: 31%;
+  margin: 0 1%;
+  object-fit: cover;
 }
 </style>

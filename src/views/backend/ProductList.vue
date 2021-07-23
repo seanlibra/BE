@@ -6,9 +6,6 @@
     <table class="product_list">
         <thead>
             <tr>
-              <th class="text-center">
-                  <input type="checkbox">
-              </th>
                <th class="text-center">
                   <span>商品縮圖</span>
               </th>
@@ -31,9 +28,6 @@
         </thead>
         <tbody>
             <tr class="single_product" v-for="item in list" :key="item.id">
-               <td class="text-center">
-                   <input type="checkbox" name="">
-                </td>
                 <td class="text-center">
                    <img class="thumbnail" :src="item.imageUrl" alt="">
                 </td>
@@ -146,6 +140,7 @@ export default {
 .thumbnail {
     height: 75px;
     width: 75px;
+    object-fit: cover;
 }
 .single_product {
   /* border:1px solid #000000; */

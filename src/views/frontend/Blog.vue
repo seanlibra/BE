@@ -152,8 +152,10 @@ export default {
       opacity: 1;
   }
   .post_list li h3 {
-    font-size: 18px;
+    font-size: 30px;
     letter-spacing: 1px;
+    margin: 15px 0;
+    font-weight: bold;
   }
   .post_list li h3 a {
       text-decoration: none;
@@ -185,6 +187,8 @@ export default {
 }
 .post_content {
   margin-bottom: 25px;
+  letter-spacing: 1px;
+  font-size: 16px;
 }
 .read_more a{
   font-size: 16px;

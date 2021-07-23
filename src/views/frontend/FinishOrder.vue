@@ -86,7 +86,6 @@ export default {
       vm.$http.get(`${vm.url}/api/${vm.path}/order/${id}`)
         .then(function (res) {
           if (res.data.success) {
-            console.log(res)
             vm.$store.commit('startLoading', false)
             vm.order = res.data.order
           } else {

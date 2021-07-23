@@ -124,9 +124,7 @@ export default {
   },
   watch: {
     due_date () {
-      if (this.isnew) {
-        this.couponDetail.create_at = Math.floor(new Date(this.due_date) / 1000)
-      }
+      this.couponDetail.due_date = Math.floor(new Date(this.due_date) / 1000)
     },
     coupon () {
       if (!this.isnew) {

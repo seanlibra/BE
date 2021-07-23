@@ -150,7 +150,7 @@ export default {
     },
     fix_time_format (time) {
       var nowTime = new Date(time * 1000)
-      return `${nowTime.getFullYear()}/${nowTime.getMonth()}/${nowTime.getDate()}`
+      return `${nowTime.getFullYear()}/${nowTime.getMonth() + 1}/${nowTime.getDate()}`
     }
   },
   computed: {

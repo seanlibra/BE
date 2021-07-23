@@ -121,17 +121,16 @@ export default {
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/cart`)
         .then(function (res) {
-          // console.log(res)
           if (res.data.success) {
             vm.list = res.data.data.carts
             vm.cart_info = res.data
-            // vm.pagination = res.data.pagination
             vm.$store.commit('startLoading', false)
             console.log(res)
           }
         })
         .catch(function (err) {
           console.log(err)
+          vm.$store.commit('startLoading', false)
         })
     },
     deleteCartsItem (item) {
@@ -168,6 +167,7 @@ export default {
         })
         .catch(function (err) {
           console.log(err)
+          vm.$store.commit('startLoading', false)
         })
     },
     useCoupon () {
@@ -184,8 +184,9 @@ export default {
             vm.cartUpdteTrigger = !vm.cartUpdteTrigger
             vm.coupon = true
           } else {
-            alert(res.data.message)
+            vm.bubbleText = res.data.message
             vm.$store.commit('startLoading', false)
+            vm.$refs.bubble.bubbleACtive()
           }
         })
         .catch(function (err) {

@@ -139,8 +139,10 @@ export default {
     position: absolute;
     right: 0;
     background: rgba(84,84,84,.07);
-    padding: 0 10px;
+    /* padding: 0 10px; */
     border-radius: 10px;
+    width: 35px;
+    text-align: center;
   }
   .product_category_list li a:hover {
     color:#fe5252;

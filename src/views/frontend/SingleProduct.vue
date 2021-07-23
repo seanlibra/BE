@@ -19,10 +19,7 @@
                         <span :class="{ normal : product.price  == product.origin_price }"  class="origin_price">${{product.origin_price}}</span>
                         <span  v-if="product.price !== product.origin_price" class="onsale_price">${{product.price}}</span>
                     </div>
-                    <div class="description">
-                        告言牛幫衣相，北行里詞那喝，你得刃停筆安內申或能許高大！結巾春兄紅高禾葉別昌尺頁。用今犬眼浪左主月至，抓色神者音年頁波人同急村叫道飽麻子定，朱麼拍；了個喝。
-
-那陽姐長即父和東綠鼻流着即止童對，海秋夕開休哪目入發拉兌笑麻請刃，聲肖馬買許心的，都要喜位牛都；壯那肖地己定蛋乙沒流祖嗎抱？寸婆由愛支蝶打記親雲反斥眼工，個土根內但多路田六娘山說抱木抱花。
+                    <div v-html="product.content" class="description">
                     </div>
                     <div class="cart_tools">
                         <div class="inner_container">
@@ -81,16 +78,14 @@ export default {
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/product/${id}`)
         .then(function (res) {
-          // console.log(res)
           if (res.data.success) {
             vm.product = res.data.product
-            // vm.pagination = res.data.pagination
             vm.$store.commit('startLoading', false)
-            console.log(res)
           }
         })
         .catch(function (err) {
           console.log(err)
+          vm.$store.commit('startLoading', false)
         })
     },
     addToCart () {
