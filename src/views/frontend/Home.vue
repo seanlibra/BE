@@ -214,7 +214,7 @@ export default {
   }
   .banner {
     height:800px;
-    background-image:url(https://i.imgur.com/Z638T6B.jpg);
+    background-image:url(https://i.imgur.com/k5rFGmx.jpg);
     background-repeat: no-repeat;
     background-size:cover;
     background-position: top;
@@ -459,7 +459,7 @@ export default {
    }
    .DM_block {
      height:650px;
-     background-image: url('https://i.imgur.com/stCqJIz.jpg');
+     background-image: url('https://i.imgur.com/aczldfV.jpg');
      background-size: cover;
      background-attachment: fixed;
      position: relative;

@@ -14,6 +14,7 @@
     bottom: 0;
     left:0;
     z-index: 9999;
+    transition: all .3s;
 }
 .lds-default {
   display: inline-block;
