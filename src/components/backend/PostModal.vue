@@ -40,7 +40,7 @@
                   <div class="col-8">
                 <div class="form-group">
                     <label class="my-1" for="content">文章內容</label>
-                    <textarea v-model="tempPost.content" class="form-control post_content" name="content" ></textarea>
+                    <ckeditor :editor="editor" v-model="tempPost.content" class="form-control post_content" name="content" ></ckeditor>
                 </div>
                  <div class="form-group">
                     <label class="my-1" for="excerpt">文章簡述</label>
@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 export default {
   props: {
     isnew: Boolean,
@@ -65,9 +66,9 @@ export default {
   },
   data () {
     return {
+      editor: ClassicEditor,
       path: process.env.VUE_APP_PATH,
       url: process.env.VUE_APP_API,
-      token: '',
       list: [],
       pagination: {},
       tempPost: {
@@ -93,11 +94,7 @@ export default {
     getEditPost () {
       var vm = this
       vm.$store.commit('startLoading', true)
-      vm.$http.get(`${vm.url}/api/${vm.path}/admin/article/${vm.editId}`, {
-        headers: {
-          Authorization: vm.token
-        }
-      })
+      vm.$http.get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/article/${vm.editId}`)
         .then(function (res) {
           console.log(res)
           if (res.data.success) {
@@ -121,11 +118,7 @@ export default {
       var vm = this
       vm.$store.commit('startLoading', true)
       var readyToUpdate = { data: this.tempPost }
-      vm.$http.put(`${vm.url}/api/${vm.path}/admin/article/${vm.editId}`, readyToUpdate, {
-        headers: {
-          Authorization: vm.token
-        }
-      })
+      vm.$http.put(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/article/${vm.editId}`, readyToUpdate)
         .then(function (res) {
           console.log(res)
           if (res.data.success) {
@@ -154,11 +147,7 @@ export default {
       const vm = this
       var readToAdd = { data: this.tempPost }
       vm.$store.commit('startLoading', true)
-      vm.$http.post(`${vm.url}/api/${vm.path}/admin/article`, readToAdd, {
-        headers: {
-          Authorization: vm.token
-        }
-      })
+      vm.$http.post(`${vm.url}/api/${vm.path}/admin/article`, readToAdd)
         .then(function (res) {
           if (res.data.success) {
             vm.$emit('bubbleOpen', res.data.message)
@@ -202,10 +191,6 @@ export default {
         }
       }
     }
-  },
-  created () {
-    const token = document.cookie.replace(/(?:(?:^|.*;\s*)vue_class\s*=\s*([^;]*).*$)|^.*$/, '$1')
-    this.token = token
   }
 }
 </script>

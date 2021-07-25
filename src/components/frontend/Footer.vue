@@ -76,9 +76,9 @@
                 <li>
                   <router-link to="/blog/all">部落格</router-link>
                 </li>
-                <!-- <li>
+                <li>
                   <router-link to="/about">關於我們</router-link>
-                </li> -->
+                </li>
               </ul>
             </div>
           </div>

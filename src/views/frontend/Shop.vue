@@ -3,24 +3,41 @@
       <Header text-dark="true"></Header>
       <div class="content container">
        <Sidebar></Sidebar>
-        <ul class="product_list">
-          <li v-for="item in current_category_product_list" :key="item.id">
-            <div class="ribbon ribbon-top-left" v-if="item.onsale">
-            <span class="ribbon_content">
-              <span class="ribbon_border">{{item.onsale}}</span>
-            </span>
-          </div>
-          <router-link :to="`/product/${item.id}`">
-            <img :src="item.imageUrl" alt="">
-          </router-link>
-          <h4 class="category">{{item.category}}</h4>
-          <h3 class="title">{{item.title}}</h3>
-          <div class="price">
-            <span  :class="{ normal : item.price  == item.origin_price }"  class="origin_price">$ {{item.origin_price}}</span>
-            <span v-if="item.price  !== item.origin_price" class="onsale_price">$ {{item.price}}</span>
-          </div>
-        </li>
+        <div class="product_list_group">
+          <ul class="product_list">
+            <li v-for="item in current_category_product_list" :key="item.id">
+              <div class="ribbon ribbon-top-left" v-if="item.onsale">
+              <span class="ribbon_content">
+                <span class="ribbon_border">{{item.onsale}}</span>
+              </span>
+            </div>
+            <router-link :to="`/product/${item.id}`">
+              <img :src="item.imageUrl" alt="">
+            </router-link>
+            <h4 class="category">{{item.category}}</h4>
+            <h3 class="title">{{item.title}}</h3>
+            <div class="price">
+              <span  :class="{ normal : item.price  == item.origin_price }"  class="origin_price">$ {{item.origin_price}}</span>
+              <span v-if="item.price  !== item.origin_price" class="onsale_price">$ {{item.price}}</span>
+            </div>
+          </li>
+          </ul>
+          <ul class="custom_pagination">
+          <li class="prev">
+            <a href="#">
+              <span class="material-icons">arrow_back_ios</span>
+            </a>
+          </li>
+          <li v-for="page in pagination.allPage" :key="page">
+            <a href="#">{{page}}</a>
+          </li>
+          <li class="next">
+            <a href="#">
+              <span class="material-icons">arrow_forward_ios</span>
+            </a>
+          </li>
         </ul>
+        </div>
       </div>
       <Loading v-if="loading"></Loading>
       <Footer></Footer>
@@ -36,17 +53,18 @@ import Loading from '@/components/Loading.vue'
 export default {
   data () {
     return {
-      path: process.env.VUE_APP_PATH,
-      url: process.env.VUE_APP_API,
       product_list: [],
-      pagination: {}
+      pagination: {
+        allPage: 0,
+        nowPage: 1
+      }
     }
   },
   methods: {
     getProducts () {
       var vm = this
       vm.$store.commit('startLoading', true)
-      vm.$http.get(`${vm.url}/api/${vm.path}/products/all`)
+      vm.$http.get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/products/all`)
         .then(function (res) {
           // console.log(res)
           if (res.data.success) {
@@ -78,6 +96,26 @@ export default {
       }
       return newList
     },
+    // product_page_list () {
+    //   const list = [...this.current_category_product_list]
+    //   // var vm = this
+    //   var newArray = []
+    //   var filterArray = []
+    //   var vm = this
+    //   let index = 0
+    //   for (let i = 0; i <= list.length; i++) {
+    //     if (i % 10 === 0) {
+    //       index++
+    //     }
+    //     newArray.push({ product: list[i], page: index })
+    //   }
+    //   for (let j = 0; j <= newArray.length; j++) {
+    //     if (newArray[j].page === vm.pagination.nowPage) {
+    //       filterArray.push(newArray[j])
+    //     }
+    //   }
+    //   return filterArray
+    // },
     category_list () {
       var list = [...this.product_list]
       var originCategoryList = []
@@ -102,6 +140,11 @@ export default {
       return newProductList
     }
   },
+  watch: {
+    product_page_list () {
+      this.pagination.allPage = this.product_page_list[this.product_page_list.length - 1].page
+    }
+  },
   created () {
     this.getProducts()
   },
@@ -117,11 +160,13 @@ export default {
     padding-top:70px;
     flex-wrap: wrap;
   }
+  .product_list_group {
+    width: 75%;
+  }
   .product_list {
     display: flex;
     flex-wrap: wrap;
     font-family: 'Noto Sans TC', sans-serif;
-    width: 75%;
     padding: 0;
   }
    .product_list li {
@@ -218,6 +263,37 @@ export default {
   }
   .product_list .onsale_price {
     color:#fe5252;
+  }
+  .custom_pagination {
+    margin: 0;
+    padding:0;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+  }
+  .custom_pagination li {
+    list-style: none;
+    align-items: center;
+    margin: 0 10px;
+  }
+  .custom_pagination li a {
+    text-decoration: none;
+    width: 25px;
+    height:25px;
+    background:#e9e9e9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    color:#1a1a1a;
+    transition: all .3s;
+  }
+  .custom_pagination li a:hover , .custom_pagination li a.active{
+    color:#ffffff;
+    background: #fe5252;
+  }
+  .custom_pagination li a .material-icons {
+    font-size: 14px;
   }
   @media (max-width:768px) {
     .product_list li {

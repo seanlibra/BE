@@ -12,7 +12,9 @@
           <li>
             <router-link to="/blog/all">Blog</router-link>
           </li>
-          <!-- <li>About</li> -->
+          <li>
+            <router-link to="/about">About</router-link>
+          </li>
           <li>
             <router-link to="/cart" href="#" class="cart_link" >
                <span class="cart" :class="{ 'fill' : !textDark }">{{cart_count}}</span>

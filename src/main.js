@@ -4,6 +4,7 @@ import router from './router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import { createStore } from 'vuex'
+import CKEditor from '@ckeditor/ckeditor5-vue'
 import { Field, Form, ErrorMessage, defineRule, configure } from 'vee-validate'
 // 匯入 vee-validate 相關規則
 import { required, email, min } from '@vee-validate/rules'
@@ -42,6 +43,7 @@ createApp(App)
   .use(router)
   .use(store)
   .use(VueAxios, axios)
+  .use(CKEditor)
   .component('Bubble', Bubble)
   .component('Form', Form)
   .component('Field', Field)
