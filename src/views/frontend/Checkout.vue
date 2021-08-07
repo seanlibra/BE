@@ -46,7 +46,7 @@
                     <textarea  type="text" class="form-control" id="message" placeholder="" row="5" v-model="message"></textarea>
                 </div>
                 <div class="mb-3 text-center">
-                    <button class="submit_btn" type="submit" :class="{ 'btn-disabled' : !has_cart }">送出訂單</button>
+                    <button class="submit_btn" type="submit" >送出訂單</button>
                 </div>
             </Form>
                   </div>
@@ -127,7 +127,7 @@ export default {
   },
   methods: {
     getCartList () {
-      var vm = this
+      const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/cart`)
         .then(function (res) {
@@ -142,9 +142,9 @@ export default {
         })
     },
     submit_order () {
-      var vm = this
+      const vm = this
       vm.$store.commit('startLoading', true)
-      var readyToOrder = { data: vm.form, message: vm.message }
+      const readyToOrder = { data: vm.form, message: vm.message }
       vm.$http.post(`${vm.url}/api/${vm.path}/order`, readyToOrder)
         .then(function (res) {
           if (res.data.success) {

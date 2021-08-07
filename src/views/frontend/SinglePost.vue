@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     getPostList (page = 1) {
-      var vm = this
+      const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/articles?page=${page}`)
         .then(function (res) {
@@ -74,8 +74,8 @@ export default {
         })
     },
     getPost () {
-      var vm = this
-      var id = vm.$route.params.id
+      const vm = this
+      const id = vm.$route.params.id
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/article/${id}`)
         .then(function (res) {

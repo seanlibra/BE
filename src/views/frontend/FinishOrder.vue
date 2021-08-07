@@ -80,8 +80,8 @@ export default {
   },
   methods: {
     getOrder () {
-      var vm = this
-      var id = vm.$route.params.id
+      const vm = this
+      const id = vm.$route.params.id
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/order/${id}`)
         .then(function (res) {
@@ -95,8 +95,8 @@ export default {
         })
     },
     payOrder () {
-      var vm = this
-      var id = vm.order.id
+      const vm = this
+      const id = vm.order.id
       vm.$store.commit('startLoading', true)
       vm.$http.post(`${vm.url}/api/${vm.path}/pay/${id}`)
         .then(function (res) {

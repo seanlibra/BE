@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     getPostList (page = 1) {
-      var vm = this
+      const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/articles?page=${page}`)
         .then(function (res) {
@@ -90,9 +90,9 @@ export default {
       return this.$store.state.isLoading
     },
     current_category_post_list () {
-      var list = [...this.post_list]
-      var newList = []
-      var nowCategory = this.$route.params.tag || 'all'
+      const list = [...this.post_list]
+      let newList = []
+      const nowCategory = this.$route.params.tag || 'all'
       if (nowCategory !== 'all') {
         list.forEach(function (item) {
           console.log(item)

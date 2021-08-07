@@ -3,8 +3,15 @@
           <div class="sidebar_group">
             <h2>商品分類</h2>
             <ul class="product_category_list">
+              <li>
+                <router-link @click="change_category('all')" :to="`/shop/all`">
+                  <span class="circle"></span>
+                  <span class="name">全部商品</span>
+                  <span class="count">{{product_list.length}}</span>
+                </router-link>
+              </li>
               <li v-for="(item,index) in category_list" :key="index">
-                <router-link :to="`/shop/${item.category}`">
+                <router-link @click="change_category(item.category)" :to="`/shop/${item.category}`">
                   <span class="circle"></span>
                   <span class="name">{{item.category}}</span>
                   <span class="count">{{item.count}}</span>
@@ -37,17 +44,18 @@ export default {
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/products/all`)
         .then(function (res) {
-          // console.log(res)
           if (res.data.success) {
             vm.product_list = res.data.products
-            // vm.pagination = res.data.pagination
             vm.$store.commit('startLoading', false)
-            console.log(res)
           }
         })
         .catch(function (err) {
           console.log(err)
         })
+    },
+    change_category (category) {
+      console.log(category)
+      this.$emit('emit-category', category)
     }
   },
   computed: {
@@ -57,7 +65,6 @@ export default {
       var nowCategory = this.$route.params.category || 'all'
       if (nowCategory !== 'all') {
         list.forEach(function (item) {
-          console.log(item)
           if (item.category === nowCategory) {
             newList.push(item)
           }

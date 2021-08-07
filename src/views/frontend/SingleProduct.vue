@@ -24,9 +24,9 @@
                     <div class="cart_tools">
                         <div class="inner_container">
                             <div class="counter">
-                                <button @click="count--">-</button>
+                                <button type="button" @click="count--">-</button>
                                 <input min="1" max="99" type="number" v-model="count">
-                                <button @click="count++">+</button>
+                                <button type="button" @click="count++">+</button>
                             </div>
                             <a @click.prevent="addToCart" class="add_to_cart" href="#">加入購物車</a>
                         </div>
@@ -74,8 +74,8 @@ export default {
   },
   methods: {
     getProductDetail () {
-      var vm = this
-      var id = vm.$route.params.id
+      const vm = this
+      const id = vm.$route.params.id
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/product/${id}`)
         .then(function (res) {
@@ -90,8 +90,8 @@ export default {
         })
     },
     addToCart () {
-      var vm = this
-      var readyToAdd = { data: { product_id: vm.product.id, qty: vm.count } }
+      const vm = this
+      const readyToAdd = { data: { product_id: vm.product.id, qty: vm.count } }
       vm.$store.commit('startLoading', true)
       vm.$http.post(`${vm.url}/api/${vm.path}/cart`, readyToAdd)
         .then(function (res) {

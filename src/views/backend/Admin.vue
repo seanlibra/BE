@@ -79,10 +79,6 @@ export default {
       return this.$store.state.isLoading
     }
   },
-  components: {
-  },
-  mounted () {
-  },
   created () {
     const token = document.cookie.replace(/(?:(?:^|.*;\s*)vue_class\s*=\s*([^;]*).*$)|^.*$/, '$1')
     this.$http.defaults.headers.common.Authorization = token

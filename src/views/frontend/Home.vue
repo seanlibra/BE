@@ -77,7 +77,9 @@
              <h3>
                <router-link :to="`/post/${item.id}`">{{item.title}}</router-link>
              </h3>
-             <div class="excerpt">{{item.description}}</div>
+             <div class="excerpt">
+               <router-link :to="`/post/${item.id}`">{{item.description}}</router-link>
+              </div>
            </div>
            <div class="post_info">
              <div class="d-flex align-items-center">
@@ -86,12 +88,12 @@
               </span>
               <span class="mx-1 text">{{item.author}}</span>
              </div>
-             <div class="d-flex align-items-center">
+             <router-link :to="`/blog/${item.tag}`" class="tags d-flex align-items-center">
                <span class="material-icons">
                    local_offer
                 </span>
                 <span class="mx-1 text">{{item.tag}}</span>
-              </div>
+              </router-link>
            </div>
          </li>
        </ul>
@@ -137,13 +139,12 @@ export default {
       url: process.env.VUE_APP_API,
       product_list: [],
       news_list: [],
-      pagination: {},
-      bubbleText: ''
+      pagination: {}
     }
   },
   methods: {
     getProducts (page = 1) {
-      var vm = this
+      const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/products?page=${page}`)
         .then(function (res) {
@@ -159,7 +160,7 @@ export default {
         })
     },
     getNews (page = 1) {
-      var vm = this
+      const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/articles?page=${page}`)
         .then(function (res) {
@@ -204,11 +205,6 @@ export default {
 </script>
 
 <style scoped>
-  /* * {
-    font-family: 'Noto Sans TC', sans-serif;
-    font-family: 'Roboto', sans-serif;
-    font-family: 'Sriracha', cursive;
-  } */
   li {
     list-style: none;
   }
@@ -248,7 +244,6 @@ export default {
   }
   .banner_ad .ad_prefix {
     margin-bottom: 10px;
-    /* padding: 2px 0; */
   }
   .banner_ad .ad_prefix span {
     font-size: 36px;
@@ -376,7 +371,6 @@ export default {
      width: 100%;
      height:350px;
      object-fit: cover;
-     /* margin-bottom: 15px; */
    }
    .product_list .category {
      color:#7e7e7e;
@@ -543,10 +537,16 @@ export default {
    .news_list li .post_content h3 a:hover {
      color:#fe5252;
    }
-    .news_list li .post_content .excerpt {
+    .news_list li .post_content .excerpt a {
      font-size: 16px;
      letter-spacing: 1px;
      font-family: 'Noto Sans TC', sans-serif;
+     text-decoration: none;
+     color:#000000;
+     transition: all .3s;
+   }
+   .news_list li .post_content .excerpt a:hover {
+     color:#fe5252;
    }
     .news_list li .post_info {
       background: #f0eff0;
@@ -557,6 +557,14 @@ export default {
     }
     .news_list li .post_info .text {
       font-size: 14px;
+    }
+    .news_list li .post_info a {
+      text-decoration: none;
+      color:#000000;
+      transition: all .3s;
+    }
+    .news_list li .post_info a:hover {
+      color:#fe5252
     }
     .custom_alert {
       position: fixed;

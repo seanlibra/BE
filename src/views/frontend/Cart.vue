@@ -72,7 +72,7 @@
           </div>
             <div class="cart_total">
                 <div class="coupon_container">
-                    <input :class="{ coupon_active : coupon == 2 }" v-model="couponCode">
+                    <input :class="{ coupon_active : coupon == 2 }" v-model.trim="couponCode">
                     <a class="coupon_no" v-if="coupon == 0" @click.prevent="useCoupon" href="#">使用優惠券</a>
                     <a class="coupon_some" v-else-if="coupon == 1" @click.prevent="useCoupon" href="#">部分已套用優惠券</a>
                     <a class="coupon_yes" v-else @click.prevent="useCoupon" href="#">已套用優惠券</a>
@@ -119,7 +119,7 @@ export default {
   },
   methods: {
     getCartList () {
-      var vm = this
+      const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/cart`)
         .then(function (res) {
@@ -136,7 +136,7 @@ export default {
         })
     },
     deleteCartsItem (item) {
-      var vm = this
+      const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.delete(`${vm.url}/api/${vm.path}/cart/${item.id}`)
         .then(function (res) {
@@ -154,27 +154,31 @@ export default {
         })
     },
     updateCartItemQty (item, count) {
-      var vm = this
-      vm.$store.commit('startLoading', true)
-      var readyForUpdate = { data: { product_id: item.id, qty: count } }
-      vm.$http.put(`${vm.url}/api/${vm.path}/cart/${item.id}`, readyForUpdate)
-        .then(function (res) {
-          if (res.data.success) {
-            vm.getCartList()
-            vm.bubbleText = res.data.message
+      const vm = this
+      if (count < 1) {
+        item.qty = 1
+      } else {
+        vm.$store.commit('startLoading', true)
+        const readyForUpdate = { data: { product_id: item.id, qty: count } }
+        vm.$http.put(`${vm.url}/api/${vm.path}/cart/${item.id}`, readyForUpdate)
+          .then(function (res) {
+            if (res.data.success) {
+              vm.getCartList()
+              vm.bubbleText = res.data.message
+              vm.$store.commit('startLoading', false)
+              vm.$refs.bubble.bubbleACtive()
+              vm.cartUpdteTrigger = !vm.cartUpdteTrigger
+            }
+          })
+          .catch(function (err) {
+            console.log(err)
             vm.$store.commit('startLoading', false)
-            vm.$refs.bubble.bubbleACtive()
-            vm.cartUpdteTrigger = !vm.cartUpdteTrigger
-          }
-        })
-        .catch(function (err) {
-          console.log(err)
-          vm.$store.commit('startLoading', false)
-        })
+          })
+      }
     },
     useCoupon () {
-      var vm = this
-      var coupon = { data: { code: vm.couponCode } }
+      const vm = this
+      const coupon = { data: { code: vm.couponCode } }
       vm.$store.commit('startLoading', true)
       vm.$http.post(`${vm.url}/api/${vm.path}/coupon`, coupon)
         .then(function (res) {
@@ -206,10 +210,10 @@ export default {
   },
   watch: {
     list () {
-      var CheckArray = [...this.list]
-      var isSomeCoupon = CheckArray.some(el => el.coupon)
+      const CheckArray = [...this.list]
+      const isSomeCoupon = CheckArray.some(el => el.coupon)
       if (isSomeCoupon) {
-        var isAllcopon = CheckArray.every(el => el.coupon)
+        const isAllcopon = CheckArray.every(el => el.coupon)
         if (isAllcopon) {
           this.coupon = 2
         } else {
@@ -313,6 +317,7 @@ export default {
       margin-right: 10px;
       align-items: center;
       justify-content: center;
+      line-height: 15px;
   }
   .time_line .step.active {
       background: #fe5252;
