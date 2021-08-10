@@ -135,6 +135,9 @@ export default {
     background: #fe5252;
     color:#ffffff;
   }
+  .cart_link:hover .cart::after {
+    top:-12px;
+  }
   .cart {
     border:2px solid #fe5252;
     width:30px;
@@ -163,6 +166,7 @@ export default {
     width:12px;
     top:-8px;
     border-color:#fe5252;
+    transition: all .3s;
   }
   @media(max-width:414px) {
     .logo {

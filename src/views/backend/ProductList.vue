@@ -88,6 +88,9 @@ export default {
           console.log(res)
           if (res.data.success) {
             vm.list = res.data.products
+            vm.list.forEach(function (item) {
+              // item.imagesUrl = []
+            })
             vm.pagination = res.data.pagination
             vm.$store.commit('startLoading', false)
             console.log(res)
@@ -102,7 +105,10 @@ export default {
     },
     openModal (isNew, item) {
       if (isNew) {
-        this.tempProduct = {}
+        this.tempProduct = {
+          specifications: [],
+          imagesUrl: []
+        }
         this.isNew = true
       } else {
         this.tempProduct = { ...item }

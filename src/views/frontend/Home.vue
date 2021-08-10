@@ -114,14 +114,14 @@ export default {
     return {
       category: [
         {
-          title: '男性衣裝',
+          title: '男性服裝',
           bg: 'https://i.imgur.com/YaTrDn6.jpg',
-          link: '/shop/男性衣裝'
+          link: '/shop/男性服裝'
         },
         {
-          title: '女性衣裝',
+          title: '女性服裝',
           bg: 'https://i.imgur.com/FXvp5Yo.jpg',
-          link: '/shop/女性衣裝'
+          link: '/shop/女性服裝'
         },
         {
           title: '男性配件',

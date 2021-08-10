@@ -194,6 +194,7 @@ export default {
       margin-right: 10px;
       align-items: center;
       justify-content: center;
+      line-height: 15px;
   }
   .time_line .step.active {
       background: #fe5252;

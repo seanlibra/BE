@@ -96,12 +96,12 @@ export default {
       news_list: [],
       category_list: [
         {
-          title: '男性衣裝',
-          link: '/shop/男性衣裝'
+          title: '男性服裝',
+          link: '/shop/男性服裝'
         },
         {
-          title: '女性衣裝',
-          link: '/shop/女性衣裝'
+          title: '女性服裝',
+          link: '/shop/女性服裝'
         },
         {
           title: '男性配件',

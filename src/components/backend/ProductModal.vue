@@ -13,9 +13,25 @@
               <div class="col-sm-4 mb-1">
                   <div class="form-group">
                       <label for="imageUrl">主要圖片</label>
-                      <input v-model="detail.imageUrl" type="text" class="form-control" name="" id="" placeholder="請輸入圖片連結">
+                      <input v-model="detail.imageUrl" type="text" class="form-control mb-3" name="" id="" placeholder="請輸入圖片連結">
                   </div>
                   <img class="img-fluid" :src="detail.imageUrl" alt="">
+                   <div class="form-group">
+                      <label for="imageUrl">其他圖片</label>
+                      <div class="images_controler">
+                        <input v-model="imagesUrl" type="text" class="form-control" name="" id="" placeholder="請輸入圖片連結">
+                        <a @click.prevent="addImagesUrl" href="#">新增圖片</a>
+                      </div>
+                      <ul class="images_container">
+                        <li v-for="(item, index) in detail.imagesUrl" :key="index" class="">
+                          <div :style="`background-image:url(${item})`">
+                            <a href="#">
+                              <span class="material-icons">close</span>
+                            </a>
+                          </div>
+                        </li>
+                      </ul>
+                  </div>
               </div>
               <div class="col-sm-8">
                   <div class="form-group mb-2">
@@ -44,7 +60,23 @@
                         <div class="form-group col-md-6 mb-3">
                           <label for="ribbon">特別訊息</label>
                           <input v-model="detail.onsale" id="ribbon" class="form-control" placeholder="請輸入緞帶訊息">
-                      </div>
+                        </div>
+                      <hr>
+                      <div class="form-group col-md-12 specifications_controler">
+                          <label for="specifications">商品規格</label>
+                          <div>
+                            <input v-model.trim="standard" id="specifications" class="form-control" placeholder="請輸入規格">
+                            <a @click.prevent="addStandard" href="#">新增規格</a>
+                          </div>
+                        </div>
+                      <ul class="product_specifications">
+                        <li v-for="item in detail.specifications" :key="item">
+                          <span>{{item}}</span>
+                          <a href="#" @click.prevent="removeStandard(item)">
+                            <span class="material-icons">close</span>
+                          </a>
+                        </li>
+                      </ul>
                       <hr>
                       <div class="form-group">
                           <label for="description">產品描述</label>
@@ -81,7 +113,12 @@ export default {
   },
   data () {
     return {
-      detail: {},
+      standard: '',
+      imagesUrl: '',
+      detail: {
+        specifications: [],
+        imagesUrl: []
+      },
       modalStatus: false
     }
   },
@@ -129,6 +166,18 @@ export default {
         .catch(function (err) {
           console.log(err)
         })
+    },
+    addStandard () {
+      this.detail.specifications.push(this.standard)
+      this.standard = ''
+    },
+    removeStandard (item) {
+      const index = this.detail.specifications.indexOf(item)
+      this.detail.specifications.splice(index, 1)
+    },
+    addImagesUrl () {
+      this.detail.imagesUrl.push(this.imagesUrl)
+      this.imagesUrl = ''
     }
   },
   watch: {
@@ -169,6 +218,7 @@ export default {
     }
     .custom_model.active {
         top:50%;
+        z-index: 9;
     }
     .custom_model .header {
         background:#c2a09e;
@@ -191,6 +241,36 @@ export default {
         background: #ffffff;
         padding: 16px;
     }
+    .images_container {
+      display: flex;
+      padding: 0;
+      margin: 0;
+      margin-top:10px ;
+      flex-wrap: wrap;
+    }
+    .images_container li {
+      list-style: none;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    .images_container li > div {
+      height:75px;
+      width:75px;
+      background-size:cover;
+      background-position: center;
+      padding: 5px;
+      position: relative;
+    }
+    .images_container li > div > a {
+      text-decoration: none;
+      color:#ffffff;
+      position: absolute;
+      top:8px;
+      right:8px;
+    }
+    .images_container li > div > a > span {
+      font-size: 16px;
+    }
     .custom_model .footer {
         padding: 16px;
         background: #ffffff;
@@ -203,5 +283,74 @@ export default {
         color:#ffffff;
         border-radius: 5px;
         text-decoration: none;
+    }
+    .images_controler {
+      display: flex;
+      align-items: center;
+    }
+    .images_controler > input {
+      width: 60%;
+    }
+    .images_controler > a {
+      width: 40%;
+      background: #c2a09e;
+      padding: 6px 10px;
+      color:#ffffff;
+      text-decoration: none;
+      text-align: center;
+      border-top-right-radius:5px;
+      border-bottom-right-radius:5px;
+      border:1px solid #c2a09e;
+      transition: all .3s;
+    }
+    .images_controler > a:hover {
+      background: #ffffff;
+      color:#c2a09e;
+    }
+    .specifications_controler > div{
+      display: flex;
+    }
+    .specifications_controler > div > input {
+      width: 80%;
+    }
+    .specifications_controler > div > a {
+      width:20%;
+      background: #c2a09e;
+      padding: 6px 10px;
+      color:#ffffff;
+      text-decoration: none;
+      text-align: center;
+      border-top-right-radius:5px;
+      border-bottom-right-radius:5px;
+      border:1px solid #c2a09e;
+      transition: all .3s;
+    }
+    .specifications_controler > div > a:hover {
+      background: #ffffff;
+      color:#c2a09e;
+    }
+    .product_specifications {
+      display: flex;
+      margin: 10px 0;
+    }
+    .product_specifications li{
+      list-style: none;
+      background: #c2a09e;
+      border-radius: 5px;
+      color:#ffffff;
+      padding: 2.5px 10px;
+      margin-right: 10px;
+      display: flex;
+      align-items: center;
+    }
+    .product_specifications li a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color:#ffffff;
+      margin-left: 5px;
+    }
+    .product_specifications li a .material-icons{
+      font-size: 14px;
     }
 </style>

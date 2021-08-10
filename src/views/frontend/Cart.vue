@@ -23,6 +23,7 @@
                     <tr>
                         <th></th>
                         <th>商品</th>
+                        <th>尺寸</th>
                         <th>單價</th>
                         <th>數量</th>
                         <th>小計</th>
@@ -42,6 +43,11 @@
                               <img :src="item.product.imageUrl">
                               <h3>{{item.product.title}}</h3>
                             </div>
+                        </td>
+                        <td>
+                          <div class="standard">
+                            {{item.standard}}
+                          </div>
                         </td>
                         <td>
                           NT$ {{item.product.price}}

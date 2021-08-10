@@ -11,7 +11,24 @@
                                 <span class="ribbon_border">{{product.onsale}}</span>
                               </span>
                             </div>
-                    <img class="product_img" :src="product.imageUrl">
+                      <!-- ---------------------------------------- -->
+                      <swiper :style="{'--swiper-navigation-color': '#fff','--swiper-pagination-color': '#fff'}" :spaceBetween="10" :navigation="true" :thumbs="{ swiper: thumbsSwiper }" class="swiper_show_img">
+                      <swiper-slide>
+                        <img :src="product.imageUrl" />
+                      </swiper-slide>
+                      <swiper-slide v-for="(item, index) in product.imagesUrl" :key="index">
+                        <img :src="item" />
+                      </swiper-slide>
+                      </swiper>
+                      <!-- ---------------------------------- -->
+                      <swiper @swiper="setThumbsSwiper" :spaceBetween="10" :slidesPerView="4" :freeMode="true" :watchSlidesVisibility="true" :watchSlidesProgress="true" class="swiper_thumb">
+                      <swiper-slide>
+                        <img :src="product.imageUrl" />
+                      </swiper-slide>
+                      <swiper-slide v-for="(item, index) in product.imagesUrl" :key="index">
+                        <img :src="item" />
+                      </swiper-slide>
+                  </swiper>
                 </div>
                 <div class="right_group">
                     <h2 class="product_title">{{product.title}}</h2>
@@ -22,9 +39,16 @@
                     <div v-html="product.content" class="description">
                     </div>
                     <div class="cart_tools">
+                         <div class="inner_container ">
+                           <select v-model="standard">
+                             <option  value="">請選擇一個選項</option>
+                             <option v-for="standard in product.specifications" :key="standard" :value="standard">{{standard}}</option>
+                           </select>
+                           <span :class="{ active : standardAlert }" class="standard_alert">請選擇一個尺寸</span>
+                        </div>
                         <div class="inner_container">
                             <div class="counter">
-                                <button type="button" @click="count--">-</button>
+                                <button type="button" @click="count > 1 ? count-- : 1">-</button>
                                 <input min="1" max="99" type="number" v-model="count">
                                 <button type="button" @click="count++">+</button>
                             </div>
@@ -57,6 +81,15 @@ import Header from '@/components/frontend/Header'
 import Footer from '@/components/frontend/Footer.vue'
 import Sidebar from '@/components/frontend/Sidebar.vue'
 import Loading from '@/components/Loading.vue'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+// Import Swiper styles
+import 'swiper/swiper.scss'
+
+import 'swiper/components/navigation/navigation.min.css'
+import 'swiper/components/thumbs/thumbs.min.css'
+
+import SwiperCore, { Navigation, Thumbs } from 'swiper/core'
+SwiperCore.use([Navigation, Thumbs])
 
 export default {
   data () {
@@ -69,7 +102,9 @@ export default {
       count: 1,
       cartUpdteTrigger: false,
       bubbleText: '',
-      pageUrl: ''
+      pageUrl: '',
+      standard: '',
+      standardAlert: false
     }
   },
   methods: {
@@ -91,22 +126,30 @@ export default {
     },
     addToCart () {
       const vm = this
-      const readyToAdd = { data: { product_id: vm.product.id, qty: vm.count } }
-      vm.$store.commit('startLoading', true)
-      vm.$http.post(`${vm.url}/api/${vm.path}/cart`, readyToAdd)
-        .then(function (res) {
-          console.log(res)
-          if (res.data.success) {
-            vm.bubbleText = res.data.message
+      if (!vm.standard) {
+        vm.standardAlert = true
+      } else {
+        const readyToAdd = { data: { product_id: vm.product.id, qty: vm.count, standard: vm.standard } }
+        vm.$store.commit('startLoading', true)
+        vm.$http.post(`${vm.url}/api/${vm.path}/cart`, readyToAdd)
+          .then(function (res) {
+            console.log(res)
+            if (res.data.success) {
+              vm.standardAlert = false
+              vm.bubbleText = res.data.message
+              vm.$store.commit('startLoading', false)
+              vm.$refs.bubble.bubbleACtive()
+              vm.cartUpdteTrigger = !vm.cartUpdteTrigger
+            }
+          })
+          .catch(function (err) {
+            console.log(err)
             vm.$store.commit('startLoading', false)
-            vm.$refs.bubble.bubbleACtive()
-            vm.cartUpdteTrigger = !vm.cartUpdteTrigger
-          }
-        })
-        .catch(function (err) {
-          console.log(err)
-          vm.$store.commit('startLoading', false)
-        })
+          })
+      }
+    },
+    setThumbsSwiper (swiper) {
+      this.thumbsSwiper = swiper
     }
   },
   computed: {
@@ -115,7 +158,7 @@ export default {
     }
   },
   components: {
-    Header, Footer, Sidebar, Loading
+    Header, Footer, Sidebar, Loading, Swiper, SwiperSlide
   },
   created () {
     this.getProductDetail()
@@ -206,12 +249,36 @@ input[type=number] {
 .cart_tools .inner_container {
   display: flex;
   align-items: center;
+  margin:15px 0;
+}
+.cart_tools .inner_container select {
+  padding:5px 15px;
+  -webkit-appearance:none;
+  box-shadow: inset 0 -1.4em 1em 0 rgb(0 0 0 / 2%);
+  background-image: url("data:image/svg+xml;charset=utf8, %3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-down'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-position: right .25em top 50%;
+  background-repeat:no-repeat;
+  padding-right: 1.4em;
+  background-size:auto 16px;
+  font-size: 16px;
+  border:1px solid #e4e4e4;
+  width:200px;
+  letter-spacing: 1px;
 }
 .cart_tools .counter {
   display: flex;
   margin-right: 15px;
 }
-
+.standard_alert {
+  font-size: 14px;
+  color:#fe5252;
+  margin-left: 15px;
+  opacity: 0;
+  transition: all .3s;
+}
+.standard_alert.active {
+  opacity: 1;
+}
 .cart_tools .counter button{
   /* display: block; */
   width: 36px;
@@ -323,6 +390,32 @@ input[type=number] {
       right: -25px;
       top: 30px;
       transform: rotate(-45deg);
+}
+/* swiper */
+.swiper-slide {
+  background-size: cover;
+  background-position: center;
+}
+.swiper_show_img {
+  height:650px;
+}
+.swiper_thumb {
+  height: 120px;
+  box-sizing: border-box;
+  padding: 10px 0;
+}
+
+.swiper_thumb .swiper-slide {
+  width: 25%;
+  opacity: 0.4;
+}
+.swiper-slide img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+.swiper_thumb .swiper-slide-thumb-active {
+  opacity: 1;
 }
 @media(max-width:1024px) {
   .product_img {
