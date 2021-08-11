@@ -94,8 +94,7 @@ SwiperCore.use([Navigation, Thumbs])
 export default {
   data () {
     return {
-      path: process.env.VUE_APP_PATH,
-      url: process.env.VUE_APP_API,
+      recentList: [],
       product: {
         on_sale: false
       },
@@ -112,11 +111,12 @@ export default {
       const vm = this
       const id = vm.$route.params.id
       vm.$store.commit('startLoading', true)
-      vm.$http.get(`${vm.url}/api/${vm.path}/product/${id}`)
+      vm.$http.get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/product/${id}`)
         .then(function (res) {
           if (res.data.success) {
             vm.product = res.data.product
             vm.$store.commit('startLoading', false)
+            vm.setRecent()
           }
         })
         .catch(function (err) {
@@ -131,9 +131,8 @@ export default {
       } else {
         const readyToAdd = { data: { product_id: vm.product.id, qty: vm.count, standard: vm.standard } }
         vm.$store.commit('startLoading', true)
-        vm.$http.post(`${vm.url}/api/${vm.path}/cart`, readyToAdd)
+        vm.$http.post(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`, readyToAdd)
           .then(function (res) {
-            console.log(res)
             if (res.data.success) {
               vm.standardAlert = false
               vm.bubbleText = res.data.message
@@ -147,6 +146,28 @@ export default {
             vm.$store.commit('startLoading', false)
           })
       }
+    },
+    setRecent () {
+      // localStorage.removeItem('be_product')
+      const recentList = [...this.recentList]
+      const vm = this
+      let exist = false
+      recentList.forEach(function (item) {
+        if (vm.product.id === item.id) {
+          exist = true
+        }
+      })
+      if (!exist) {
+        recentList.push({ id: this.product.id, title: this.product.title, img: this.product.imageUrl, price: this.product.price, origin_price: this.product.origin_price })
+        localStorage.setItem('be_product', JSON.stringify(recentList))
+      }
+    },
+    getRecent () {
+      const recentList = JSON.parse(localStorage.getItem('be_product')) || []
+      if (recentList.length > 5) {
+        recentList.splice(0, 1)
+      }
+      this.recentList = recentList
     },
     setThumbsSwiper (swiper) {
       this.thumbsSwiper = swiper
@@ -163,6 +184,7 @@ export default {
   created () {
     this.getProductDetail()
     this.pageUrl = document.location.href
+    this.getRecent()
   }
 }
 </script>

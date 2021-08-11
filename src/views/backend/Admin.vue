@@ -1,36 +1,47 @@
 <template>
-    <div class="admin">
-        <div class="admin_wrapper">
-            <div class="navbar">
-                <ul class="menu">
-                    <li>
-                        <router-link to="/admin">商品管理</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/admin/order">訂單管理</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/admin/coupon">優惠管理</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/admin/posts">文章管理</router-link>
-                    </li>
-                </ul>
-                <a @click.prevent="logOut" class="logout" href="#">登出</a>
-            </div>
-            <div class="content">
-                <router-view></router-view>
-            </div>
-        </div>
+  <div class="admin">
+    <div class="admin_wrapper">
+      <div class="navbar">
+        <ul class="menu">
+          <li>
+            <router-link to="/admin">商品管理</router-link>
+          </li>
+          <li>
+            <router-link to="/admin/order">訂單管理</router-link>
+          </li>
+          <li>
+            <router-link to="/admin/coupon">優惠管理</router-link>
+          </li>
+          <li>
+            <router-link to="/admin/posts">文章管理</router-link>
+          </li>
+        </ul>
+        <a @click.prevent="logOut" class="logout" href="#">登出</a>
+      </div>
+      <div class="content">
+        <router-view></router-view>
+      </div>
     </div>
-    <!-- <ProductModal ref="productModal"></ProductModal> -->
-    <div class="loading_shadow" v-if="loading">
-        <div class="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-     </div>
+  </div>
+  <div class="loading_shadow" v-if="loading">
+    <div class="lds-default">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
 </template>
 
 <script>
-// import ProductModal from '@/components/ProductModal.vue'
 export default {
   data () {
     return {
@@ -38,12 +49,11 @@ export default {
   },
   methods: {
     logOut () {
-      var vm = this
+      const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.post(`${process.env.VUE_APP_API}/logout`)
         .then(function (res) {
           if (res.data.success) {
-            console.log(res.data.message)
             vm.$store.commit('startLoading', false)
             alert(res.data.message)
             document.cookie = 'vue_class=; expires=; path=/'
@@ -57,15 +67,12 @@ export default {
         })
     },
     checkLogin () {
-      var vm = this
-      console.log('檢查登入中')
+      const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.post(`${process.env.VUE_APP_API}/api/user/check`)
         .then(function (res) {
-          console.log(res)
           if (res.data.success) {
             vm.$store.commit('startLoading', false)
-            // alert('目前登入中')
           } else {
             alert('驗證錯誤,請重新登入')
             vm.$store.commit('startLoading', false)
@@ -89,68 +96,69 @@ export default {
 
 <style scoped>
 .admin {
-    background: #7a7a7a;
-    height:100vh;
+  background: #7a7a7a;
+  height: 100vh;
 }
 .admin_wrapper {
-    height:80%;
-    width:80%;
-    /* background: #ffffff; */
-    position: absolute;
-    top:50%;
-    left:50%;
-    transform: translateY(-50%) translateX(-50%);
-    border-radius: 10px;
+  height: 80%;
+  width: 80%;
+  /* background: #ffffff; */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  border-radius: 10px;
 }
 .navbar {
-    background: #c2a09e;
-    padding: 12px 40px;
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
+  background: #c2a09e;
+  padding: 12px 40px;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
 }
 .navbar .menu {
-    display: flex;
-    margin: 0;
-    padding-left: 0;
+  display: flex;
+  margin: 0;
+  padding-left: 0;
 }
 .navbar .menu li {
-    list-style: none;
-    font-size: 16px;
-    color:#ffffff;
-    margin-right: 15px;
-    letter-spacing: 1px;
+  list-style: none;
+  font-size: 16px;
+  color: #ffffff;
+  margin-right: 15px;
+  letter-spacing: 1px;
 }
-.navbar .menu li a , .logout {
-    font-size: 16px;
-    color:#ffffff;
-    letter-spacing: 1px;
-    text-decoration: none;
+.navbar .menu li a,
+.logout {
+  font-size: 16px;
+  color: #ffffff;
+  letter-spacing: 1px;
+  text-decoration: none;
 }
 .content {
-    overflow-y: scroll;
-    background: #ffffff;
-    height: calc(100% - 48px);
-    padding:1.5% 2.5%;
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
+  overflow-y: scroll;
+  background: #ffffff;
+  height: calc(100% - 48px);
+  padding: 1.5% 2.5%;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
 }
 /*======loading======*/
 .loading_shadow {
-    background: rgba(255,255,255,0.7);
-    position: fixed;
-    top:0;
-    right: 0;
-    bottom: 0;
-    left:0;
-    z-index: 9999;
+  background: rgba(255, 255, 255, 0.7);
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 9999;
 }
 .lds-default {
   display: inline-block;
   position: absolute;
   width: 80px;
   height: 80px;
-  top:50%;
-  left:50%;
+  top: 50%;
+  left: 50%;
   transform: translateX(-50%) translateY(-50%);
 }
 .lds-default div {
@@ -222,7 +230,10 @@ export default {
   left: 62px;
 }
 @keyframes lds-default {
-  0%, 20%, 80%, 100% {
+  0%,
+  20%,
+  80%,
+  100% {
     transform: scale(1);
   }
   50% {

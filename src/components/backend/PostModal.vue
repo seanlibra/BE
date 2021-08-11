@@ -40,7 +40,9 @@
                   <div class="col-8">
                 <div class="form-group">
                     <label class="my-1" for="content">文章內容</label>
-                    <ckeditor :editor="editor" v-model="tempPost.content" class="form-control post_content" name="content" ></ckeditor>
+                    <div class="post_content_scroll">
+                      <ckeditor :editor="editor" v-model="tempPost.content" class="form-control post_content" name="content" ></ckeditor>
+                    </div>
                 </div>
                  <div class="form-group">
                     <label class="my-1" for="excerpt">文章簡述</label>
@@ -59,6 +61,7 @@
 
 <script>
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+// import ImageInsert from '@ckeditor/ckeditor5-image'
 export default {
   props: {
     isnew: Boolean,
@@ -67,6 +70,9 @@ export default {
   data () {
     return {
       editor: ClassicEditor,
+      editorConfig: {
+        toolbar: ['bold', 'italic', '|', 'link']
+      },
       path: process.env.VUE_APP_PATH,
       url: process.env.VUE_APP_API,
       list: [],
@@ -195,7 +201,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
   .post_modal_container {
       position: absolute;
       top:0;
@@ -259,6 +265,10 @@ export default {
         color:#ffffff;
         border-radius: 5px;
         text-decoration: none;
+    }
+    .post_content_scroll {
+      overflow-y: auto;
+      height:600px;
     }
     .post_content {
         height: 350px;

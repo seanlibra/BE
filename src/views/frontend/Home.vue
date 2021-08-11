@@ -13,7 +13,7 @@
           </div>
         </div>
       </div>
-      <Header></Header>
+      <Header :update-Cart="cartUpdteTrigger"></Header>
     </div>
     <div class="new_arrival">
       <h2 class="block_title text-center">New arrival</h2>
@@ -21,86 +21,128 @@
         <li v-for="item in arrival_list" :key="item.id">
           <div class="ribbon ribbon-top-left" v-if="item.onsale">
             <span class="ribbon_content">
-              <span class="ribbon_border">{{item.onsale}}</span>
+              <span class="ribbon_border">{{ item.onsale }}</span>
             </span>
           </div>
           <router-link class="product_thumbnail" :to="`/product/${item.id}`">
-            <img :src="item.imageUrl" alt="">
+            <img
+              v-if="item.imagesUrl[0]"
+              class="on_hover"
+              :src="item.imagesUrl[0]"
+              alt=""
+            />
+            <img class="default" :src="item.imageUrl" alt="" />
             <div class="product_overlay"></div>
+            <a @click.prevent="open_quick(item)" class="quick_view" href="#">
+              <span class="material-icons mx-2">visibility</span>
+              <span>快速瀏覽</span>
+            </a>
           </router-link>
-          <h4 class="category">{{item.category}}</h4>
+          <h4 class="category">
+            <router-link :to="`/shop/${item.category}`">{{
+              item.category
+            }}</router-link>
+          </h4>
           <h3 class="title">
-            <router-link :to="`/product/${item.id}`">{{item.title}}</router-link>
+            <router-link :to="`/product/${item.id}`">{{
+              item.title
+            }}</router-link>
           </h3>
-          <div class="price">
-            <span :class="{ normal : item.price  == item.origin_price }"  class="origin_price">$ {{item.origin_price}}</span>
-            <span v-if="item.price !== item.origin_price"  class="onsale_price">$ {{item.price}}</span>
-          </div>
+          <router-link :to="`/product/${item.id}`" class="price">
+            <span
+              :class="{ normal: item.price == item.origin_price }"
+              class="origin_price"
+              >$ {{ item.origin_price }}</span
+            >
+            <span v-if="item.price !== item.origin_price" class="onsale_price"
+              >$ {{ item.price }}</span
+            >
+          </router-link>
         </li>
       </ul>
     </div>
-     <div class="DM_block">
-       <div class="container banner_content">
-         <div class="banner_ad">
+    <div class="DM_block">
+      <div class="container banner_content">
+        <div class="banner_ad">
           <div class="ad_prefix">
             <span>B & E - S T Y L E</span>
           </div>
           <div class="ad_main">炎炎夏日的新選擇</div>
           <div>
-             <router-link to="/shop/夏季新品" class="ad_btn">夏季新品</router-link>
+            <router-link to="/shop/夏季新品" class="ad_btn"
+              >夏季新品</router-link
+            >
           </div>
         </div>
-       </div>
+      </div>
     </div>
     <div class="product_category container-fluid">
-       <h2 class="block_title text-center">Category</h2>
-       <ul class="product_category_list container">
-         <li v-for="(item,index) in category" :key="index">
-           <router-link :to="item.link" :style="`background-image:url(${item.bg})`">
-             <div class="category_overlay">
-               <span>{{item.title}}</span>
-             </div>
-           </router-link>
-         </li>
-       </ul>
+      <h2 class="block_title text-center">Category</h2>
+      <ul class="product_category_list container">
+        <li v-for="(item, index) in category" :key="index">
+          <router-link
+            :to="item.link"
+            :style="`background-image:url(${item.bg})`"
+          >
+            <div class="category_overlay">
+              <span>{{ item.title }}</span>
+            </div>
+          </router-link>
+        </li>
+      </ul>
     </div>
-  <div class="news_block container-fluid">
-    <div class="container">
-      <h2 class="block_title text-center">LATEST NEWS</h2>
-       <ul class="news_list">
-         <li v-for="item in display_news" :key="item.id">
-           <router-link :to="`/post/${item.id}`" class="thumbnail" :style="`background-image:url(${item.imageUrl})`">
-             <div class="news_overlay"></div>
-             <span class="read_more">了解更多</span>
-           </router-link>
-           <div class="post_content">
-             <h3>
-               <router-link :to="`/post/${item.id}`">{{item.title}}</router-link>
-             </h3>
-             <div class="excerpt">
-               <router-link :to="`/post/${item.id}`">{{item.description}}</router-link>
+    <div class="news_block container-fluid">
+      <div class="container">
+        <h2 class="block_title text-center">LATEST NEWS</h2>
+        <ul class="news_list">
+          <li v-for="item in display_news" :key="item.id">
+            <router-link
+              :to="`/post/${item.id}`"
+              class="thumbnail"
+              :style="`background-image:url(${item.imageUrl})`"
+            >
+              <div class="news_overlay"></div>
+              <span class="read_more">了解更多</span>
+            </router-link>
+            <div class="post_content">
+              <h3>
+                <router-link :to="`/post/${item.id}`">{{
+                  item.title
+                }}</router-link>
+              </h3>
+              <div class="excerpt">
+                <router-link :to="`/post/${item.id}`">{{
+                  item.description
+                }}</router-link>
               </div>
-           </div>
-           <div class="post_info">
-             <div class="d-flex align-items-center">
-               <span class="material-icons">
-                  account_circle
-              </span>
-              <span class="mx-1 text">{{item.author}}</span>
-             </div>
-             <router-link :to="`/blog/${item.tag}`" class="tags d-flex align-items-center">
-               <span class="material-icons">
-                   local_offer
-                </span>
-                <span class="mx-1 text">{{item.tag}}</span>
+            </div>
+            <div class="post_info">
+              <div class="d-flex align-items-center">
+                <span class="material-icons"> account_circle </span>
+                <span class="mx-1 text">{{ item.author }}</span>
+              </div>
+              <router-link
+                :to="`/blog/${item.tag}`"
+                class="tags d-flex align-items-center"
+              >
+                <span class="material-icons"> local_offer </span>
+                <span class="mx-1 text">{{ item.tag }}</span>
               </router-link>
-           </div>
-         </li>
-       </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
-    </div>
+    <quickModal
+      @quick-carts="quick_carts_reload"
+      @quick-bubble="quick_bubble"
+      @clean-quick="quick_product = {}"
+      ref="quick_modal"
+      :product="quick_product"
+    ></quickModal>
     <Loading v-if="loading"></Loading>
     <Footer></Footer>
+    <Bubble ref="bubble" :bubbleText="bubbleText"></Bubble>
   </div>
 </template>
 
@@ -108,6 +150,7 @@
 import Header from '@/components/frontend/Header.vue'
 import Footer from '@/components/frontend/Footer.vue'
 import Loading from '@/components/Loading.vue'
+import quickModal from '@/components/frontend/quick_modal'
 export default {
   name: 'Home',
   data () {
@@ -135,11 +178,15 @@ export default {
         }
 
       ],
+      quick_product: {},
       path: process.env.VUE_APP_PATH,
       url: process.env.VUE_APP_API,
       product_list: [],
       news_list: [],
-      pagination: {}
+      pagination: {},
+      quick_modal_show: false,
+      bubbleText: '',
+      cartUpdteTrigger: false
     }
   },
   methods: {
@@ -149,14 +196,39 @@ export default {
       vm.$http.get(`${vm.url}/api/${vm.path}/products?page=${page}`)
         .then(function (res) {
           if (res.data.success) {
-            vm.bubbleText = res.data.success
             vm.product_list = res.data.products
             vm.pagination = res.data.pagination
             vm.$store.commit('startLoading', false)
           }
         })
         .catch(function (err) {
-          console.log(err)
+          alert(err)
+        })
+    },
+    open_quick (item) {
+      this.$refs.quick_modal.openModal()
+      this.getSingleProduct(item)
+    },
+    quick_bubble (text) {
+      this.bubbleText = text
+      this.$refs.bubble.bubbleACtive()
+    },
+    quick_carts_reload () {
+      this.cartUpdteTrigger = !this.cartUpdteTrigger
+    },
+    getSingleProduct (item) {
+      const vm = this
+      vm.$store.commit('startLoading', true)
+      vm.$http.get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/product/${item.id}`)
+        .then(function (res) {
+          if (res.data.success) {
+            vm.quick_product = res.data.product
+            vm.$store.commit('startLoading', false)
+          }
+        })
+        .catch(function (err) {
+          alert(err)
+          vm.$store.commit('startLoading', false)
         })
     },
     getNews (page = 1) {
@@ -170,7 +242,7 @@ export default {
           }
         })
         .catch(function (err) {
-          console.log(err)
+          alert(err)
         })
     }
   },
@@ -199,7 +271,7 @@ export default {
     this.getNews()
   },
   components: {
-    Header, Footer, Loading
+    Header, Footer, Loading, quickModal
   }
 }
 </script>
@@ -207,6 +279,9 @@ export default {
 <style scoped>
   li {
     list-style: none;
+  }
+  .home {
+    position: relative;
   }
   .banner {
     height:800px;
@@ -299,6 +374,35 @@ export default {
      margin-bottom: 15px;
      display: block;
    }
+   .product_list li .product_thumbnail .quick_view {
+     position: absolute;
+     bottom: 0;
+     left:0;
+     right: 0;
+     top:100%;
+     background: rgba(0,0,0,0.5);
+     color:#ffffff;
+     text-decoration: none;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     transition: all .3s;
+     opacity: 0;
+     letter-spacing: 1px;
+     font-size: 16px;
+   }
+   .product_list li .product_thumbnail .default {
+     position: relative;
+     transition: all .5s;
+     opacity: 1;
+   }
+   .product_list li .product_thumbnail .on_hover{
+     position: absolute;
+     top:0;
+     left:0;
+     right: 0;
+     bottom: 0;
+   }
    .product_list li .product_thumbnail .product_overlay {
      position: absolute;
      top:0;
@@ -307,8 +411,15 @@ export default {
      bottom: 0;
      transition: all .3s;
    }
+   .product_list li .product_thumbnail:hover .quick_view{
+     top:90%;
+     opacity: 1;
+   }
+   .product_list li .product_thumbnail:hover .default {
+     opacity: 0;
+   }
    .product_list li .product_thumbnail:hover .product_overlay{
-     background: rgba(0,0,0,0.3);
+     background: rgba(0,0,0,0.2);
    }
    .ribbon {
      width: 150px;
@@ -316,6 +427,7 @@ export default {
      overflow: hidden;
      position: absolute;
      z-index: 99;
+     pointer-events: none;
    }
    .ribbon::before,
    .ribbon::after {
@@ -373,27 +485,35 @@ export default {
      object-fit: cover;
    }
    .product_list .category {
-     color:#7e7e7e;
      margin-bottom: 10px;
      display: flex;
      flex-direction: column;
      font-size: 16px;
      letter-spacing: 1px;
    }
+   .product_list .category a {
+     color:#7e7e7e;
+     text-decoration: none;
+   }
    .product_list .title {
      font-size: 18px;
      color:#000000;
-     margin-bottom: 10px;
+     margin-bottom: 5px;
      letter-spacing: 1px;
    }
    .product_list .title a {
      text-decoration: none;
      color:inherit;
+     transition: all .3s;
+   }
+   .product_list .title a:hover {
+     color:#fe5252;
    }
    .product_list .price {
      font-family:'Sriracha',handwriting;
      color:#7e7e7e;
      font-size: 14px;
+     text-decoration: none;
      /* display: flex; */
    }
   .product_list .origin_price {
@@ -417,6 +537,7 @@ export default {
      list-style: none;
      width:23%;
      margin: 0 1%;
+     overflow: hidden;
    }
    .product_category_list li a {
      width: 100%;
@@ -424,6 +545,7 @@ export default {
      background-size: cover;
      display:block;
      text-decoration: none;
+     transition: all .3s;
    }
    .product_category_list li a .category_overlay {
      display: flex;
@@ -434,6 +556,9 @@ export default {
      background: rgba(0,0,0,0.3);
      opacity: 0;
      transition: all .3s;
+   }
+   .product_category_list li:hover a{
+     transform: scale(1.1);
    }
    .product_category_list li a:hover span {
      opacity: 1;
@@ -450,6 +575,7 @@ export default {
      border-radius: 10px;
      opacity: 0;
      transition: all .5s;
+     transform: scale(0.9);
    }
    .DM_block {
      height:650px;
@@ -457,7 +583,6 @@ export default {
      background-size: cover;
      background-attachment: fixed;
      position: relative;
-     /* margin-bottom: 100px; */
    }
    .news_block {
      background: #ffefea;
@@ -468,6 +593,7 @@ export default {
      padding: 0;
      display: flex;
      flex-wrap: wrap;
+     font-family: 'Noto Sans TC', sans-serif;
    }
    .news_list li {
      width: 31%;
@@ -590,6 +716,11 @@ export default {
     .custom_alert.active {
       opacity: 1;
       pointer-events: none;
+    }
+    @media(max-width:1024px) {
+      .product_list li .product_thumbnail .quick_view {
+        display: none;
+      }
     }
     @media (max-width:768px) {
       .banner {

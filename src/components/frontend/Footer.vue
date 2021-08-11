@@ -96,6 +96,14 @@ export default {
       news_list: [],
       category_list: [
         {
+          title: '全部商品',
+          link: '/shop/all'
+        },
+        {
+          title: '夏季新品',
+          link: '/shop/夏季新品'
+        },
+        {
           title: '男性服裝',
           link: '/shop/男性服裝'
         },
@@ -265,10 +273,13 @@ export default {
    .category_list {
      margin: 0;
      padding: 0;
+     display: flex;
+     flex-wrap: wrap;
    }
    .category_list li {
      list-style: none;
      padding: 8px 8px 8px 0;
+     width: 50%;
    }
    .category_list li a {
      text-decoration: none;

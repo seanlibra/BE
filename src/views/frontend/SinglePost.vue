@@ -1,44 +1,57 @@
 <template>
   <div class="single_post">
     <Header :text-dark="true"></Header>
-      <div class="container wrapper">
-           <div class="content">
-               <img class="thumbnail" :src="post.imageUrl" alt="">
-               <h2>{{post.title}}</h2>
-               <div class="post_info">
-                <div class="info_group">
-                    <span class="material-icons">
-                        person
-                    </span>
-                    <span>{{post.author}}</span>
-                </div>
-                <div class="info_group">
-                    <span class="material-icons">
-                    schedule
-                    </span>
-                    <span>{{fix_data_format()}}</span>
-                </div>
-                <div class="info_group">
-                    <span class="material-icons">
-                        bookmark
-                    </span>
-                    <span>{{post.tag}}</span>
-                </div>
-               </div>
-               <div v-html="post.content" class="post_content"></div>
-               <h4 class="share_this_post_title">分享這篇文章</h4>
-               <div class="soical_media_container">
-                  <a target="_blank" style="background-image:url('https://i.imgur.com/sUM6rZ1.png')" :href="`https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`"></a>
-                  <a target="_blank" style="background-image:url('https://i.imgur.com/rxHpEdl.png')" :href="`http://www.twitter.com/share?url=${pageUrl}`"></a>
-                  <a target="_blank" style="background-image:url('https://i.imgur.com/i9i9Hpf.png')" :href="`https://t.me/share/url?url=${pageUrl}&text=hey! check this out`"></a>
-                  <a target="_blank" style="background-image:url('https://i.imgur.com/mQ6bpWS.png')" :href="`https://api.whatsapp.com/send?text=${pageUrl}`"></a>
-                  <a style="background-image:url('https://i.imgur.com/jMyZwmb.png')" href="#"></a>
-               </div>
-           </div>
-          <Sidebar :posts="post_list"></Sidebar>
+    <div class="container wrapper">
+      <div class="content">
+        <img class="thumbnail" :src="post.imageUrl" alt="" />
+        <h2>{{ post.title }}</h2>
+        <div class="post_info">
+          <div class="info_group">
+            <span class="material-icons"> person </span>
+            <span>{{ post.author }}</span>
+          </div>
+          <div class="info_group">
+            <span class="material-icons"> schedule </span>
+            <span>{{ fix_data_format() }}</span>
+          </div>
+          <div class="info_group">
+            <span class="material-icons"> bookmark </span>
+            <span>{{ post.tag }}</span>
+          </div>
+        </div>
+        <div v-html="post.content" class="post_content"></div>
+        <h4 class="share_this_post_title">分享這篇文章</h4>
+        <div class="soical_media_container">
+          <a
+            target="_blank"
+            style="background-image: url('https://i.imgur.com/sUM6rZ1.png')"
+            :href="`https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`"
+          ></a>
+          <a
+            target="_blank"
+            style="background-image: url('https://i.imgur.com/rxHpEdl.png')"
+            :href="`http://www.twitter.com/share?url=${pageUrl}`"
+          ></a>
+          <a
+            target="_blank"
+            style="background-image: url('https://i.imgur.com/i9i9Hpf.png')"
+            :href="`https://t.me/share/url?url=${pageUrl}&text=hey! check this out`"
+          ></a>
+          <a
+            target="_blank"
+            style="background-image: url('https://i.imgur.com/mQ6bpWS.png')"
+            :href="`https://api.whatsapp.com/send?text=${pageUrl}`"
+          ></a>
+          <a
+            style="background-image: url('https://i.imgur.com/jMyZwmb.png')"
+            href="#"
+          ></a>
+        </div>
       </div>
-      <Loading v-if="loading"></Loading>
-      <Footer></Footer>
+      <Sidebar :posts="post_list"></Sidebar>
+    </div>
+    <Loading v-if="loading"></Loading>
+    <Footer></Footer>
   </div>
 </template>
 
@@ -114,6 +127,30 @@ export default {
 }
 </script>
 
+<style>
+.post_content {
+  font-family: "Noto Sans TC", sans-serif;
+}
+.post_content p {
+  font-size: 16px;
+  letter-spacing: 1px;
+  line-height: 26px;
+}
+.post_content h2 {
+  font-size: 30px;
+  color: #fe5252;
+  letter-spacing: 1px;
+}
+.post_content img {
+  max-width: 100%;
+}
+@media (max-width: 768px) {
+  .post_content img {
+    width: 100%;
+  }
+}
+</style>
+
 <style scoped>
 .wrapper {
   padding-top: 70px;
@@ -124,23 +161,22 @@ export default {
 .content {
   width: 75%;
   padding: 20px;
-
 }
 .content .thumbnail {
   width: 100%;
-  height:400px;
+  height: 400px;
   margin-bottom: 20px;
   object-fit: cover;
 }
 .content h2 {
   letter-spacing: 1px;
   margin-bottom: 20px;
-  font-family: 'Noto Sans TC', sans-serif;
+  font-family: "Noto Sans TC", sans-serif;
   font-size: 30px;
 }
 .post_info {
-  border-top:1px solid #f1f1f1;
-  border-bottom:1px solid #f1f1f1;
+  border-top: 1px solid #f1f1f1;
+  border-bottom: 1px solid #f1f1f1;
   padding: 15px 0;
   display: flex;
   margin-bottom: 20px;
@@ -155,38 +191,38 @@ export default {
 }
 .post_content {
   margin-bottom: 15px;
-   border-bottom: 1px solid #e9e9e9;
+  border-bottom: 1px solid #e9e9e9;
 }
 .share_this_post_title {
-  font-family: 'Noto Sans TC', sans-serif;
-  border-left:3px solid #fe5252;
+  font-family: "Noto Sans TC", sans-serif;
+  border-left: 3px solid #fe5252;
   padding-left: 16px;
   font-size: 18px;
   letter-spacing: 1px;
 }
-.soical_media_container{
+.soical_media_container {
   /* border-top:1px solid #e9e9e9; */
-  padding-top:5px;
+  padding-top: 5px;
 }
 .soical_media_container {
   display: flex;
 }
-.soical_media_container a{
+.soical_media_container a {
   width: 30px;
-  height:30px;
+  height: 30px;
   background-size: contain;
   margin-right: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 .soical_media_container a:hover {
   opacity: 0.5;
 }
-img{
+img {
   width: 31%;
   margin: 0 1%;
   object-fit: cover;
 }
-@media(max-width:414px) {
+@media (max-width: 414px) {
   .wrapper {
     padding-top: 35px;
     padding-bottom: 35px;

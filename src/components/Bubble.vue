@@ -38,6 +38,7 @@ export default {
   opacity: 0;
   transition: all .3s;
   color:#ffffff;
+  z-index: 9999;
 }
 .bubble.active {
     opacity: 1;

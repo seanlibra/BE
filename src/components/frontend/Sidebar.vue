@@ -4,14 +4,14 @@
             <h2>商品分類</h2>
             <ul class="product_category_list">
               <li>
-                <router-link @click="change_category('all')" :to="`/shop/all`">
+                <router-link @click="change_category('all')" :to="`/shop/all`" :class="{ active :now_category === 'all' }">
                   <span class="circle"></span>
                   <span class="name">全部商品</span>
                   <span class="count">{{product_list.length}}</span>
                 </router-link>
               </li>
               <li v-for="(item,index) in category_list" :key="index">
-                <router-link @click="change_category(item.category)" :to="`/shop/${item.category}`">
+                <router-link @click="change_category(item.category)" :to="`/shop/${item.category}`" :class="{ active :now_category === item.category }">
                   <span class="circle"></span>
                   <span class="name">{{item.category}}</span>
                   <span class="count">{{item.count}}</span>
@@ -19,9 +19,19 @@
               </li>
             </ul>
           </div>
-          <!-- <div class="sidebar_group">
-            <h2>熱門商品</h2>
-          </div> -->
+          <div class="sidebar_group">
+            <h2>最近瀏覽的商品</h2>
+            <ul class="recent_product_list">
+              <li v-for="item in recent_list.slice().reverse()" :key="item.id">
+                <router-link class="thumbnail" :to="`/product/${item.id}`" :style="`background-image:url(${item.img})`"></router-link>
+                <div class="single_recent_info">
+                  <router-link class="title" :to="`/product/${item.id}`">{{item.title}}</router-link>
+                   <router-link :class="{ normal : item.price == item.origin_price }" class="origin_price" :to="`/product/${item.id}`">$ {{item.origin_price}}</router-link>
+                  <router-link v-if="item.price !== item.origin_price"  class="price" :to="`/product/${item.id}`">$ {{item.price}}</router-link>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
 </template>
 
@@ -34,8 +44,9 @@ export default {
     return {
       path: process.env.VUE_APP_PATH,
       url: process.env.VUE_APP_API,
-      product_list: []
-
+      product_list: [],
+      recent_list: [],
+      now_category: ''
     }
   },
   methods: {
@@ -54,8 +65,17 @@ export default {
         })
     },
     change_category (category) {
-      console.log(category)
+      // console.log(category)
       this.$emit('emit-category', category)
+      this.now_category = category
+    },
+    getRecent () {
+      const recentList = JSON.parse(localStorage.getItem('be_product')) || []
+      console.log(recentList)
+      if (recentList.length > 5) {
+        recentList.splice(0, 1)
+      }
+      this.recent_list = recentList
     }
   },
   computed: {
@@ -100,6 +120,8 @@ export default {
   },
   created () {
     this.getProducts_category()
+    this.getRecent()
+    this.now_category = this.$route.params.category
   }
 }
 </script>
@@ -152,8 +174,65 @@ export default {
     width: 35px;
     text-align: center;
   }
-  .product_category_list li a:hover {
+  .product_category_list li a:hover , .product_category_list li a.active  {
     color:#fe5252;
+  }
+  .recent_product_list {
+    margin: 0;
+    padding: 15px 0;
+  }
+  .recent_product_list li {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f1f1;
+  }
+  .recent_product_list li .thumbnail {
+    display:block;
+    width:75px;
+    height:75px;
+    background-size: cover;
+    border-radius: 10px;
+    transition: all .3s;
+  }
+  .recent_product_list li:hover .thumbnail {
+    opacity: 0.5;
+  }
+  .recent_product_list li .single_recent_info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-left: 10px;
+    height:75px;
+  }
+  .recent_product_list li .single_recent_info a {
+    /* text-decoration: none; */
+    letter-spacing: 1px;
+  }
+  .single_recent_info .title {
+    font-size: 14px;
+    transition: all .3s;
+    color:#000000;
+    text-decoration: none;
+  }
+  .recent_product_list li:hover .title {
+    color:#fe5252;
+  }
+  .single_recent_info .origin_price {
+    font-size: 14px;
+    font-family: 'Sriracha',handwriting;
+    color:#7e7e7e;
+    text-decoration: line-through;
+  }
+  .single_recent_info .price {
+    font-size: 14px;
+    font-family: 'Sriracha',handwriting;
+    color:#fe5252;
+    text-decoration: none;
+  }
+  .single_recent_info .origin_price.normal {
+    text-decoration: none;
   }
   @media (max-width:414px) {
     .sidebar {
