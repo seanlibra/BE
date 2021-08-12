@@ -66,7 +66,7 @@ export default {
       path: process.env.VUE_APP_PATH,
       url: process.env.VUE_APP_API,
       post: {},
-      post_list: {},
+      post_list: [],
       pageUrl: ''
     }
   },
@@ -95,7 +95,6 @@ export default {
           if (res.data.success) {
             vm.post = res.data.article
             vm.$store.commit('startLoading', false)
-            console.log(res)
           }
         })
         .catch(function (err) {

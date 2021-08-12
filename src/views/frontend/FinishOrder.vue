@@ -16,7 +16,8 @@
           <span class="text">完成訂單</span>
         </li>
       </ul>
-      <h3 class="list_title">完成訂單</h3>
+      <h3 v-if="is_paid" class="list_title">謝謝您的購買!</h3>
+      <h3 v-else class="list_title">即將完成訂單</h3>
       <div class="order_container">
         <div class="order">
           <h3 class="order_id">您的訂單編號:{{ order.id }}</h3>
@@ -53,7 +54,10 @@
               href="#"
               >一鍵自動付款</a
             >
-            <span v-else class="pay_done">付款完成</span>
+            <div v-else>
+            <span class="pay_done">付款完成</span>
+            <router-link  class="back_to_home" to="/" >回到首頁</router-link>
+            </div>
           </div>
         </div>
       </div>
@@ -95,7 +99,6 @@ export default {
             vm.$store.commit('startLoading', false)
             vm.order = res.data.order
           } else {
-            console.log(res)
             vm.$store.commit('startLoading', false)
           }
         })
@@ -107,11 +110,9 @@ export default {
       vm.$http.post(`${vm.url}/api/${vm.path}/pay/${id}`)
         .then(function (res) {
           if (res.data.success) {
-            console.log(res)
             vm.$store.commit('startLoading', false)
             vm.getOrder()
           } else {
-            console.log(res)
             vm.$store.commit('startLoading', false)
           }
         })
@@ -265,6 +266,21 @@ export default {
   background: #198754;
   padding: 8px 24px;
   color: #ffffff;
+  margin-right: 15px;
+}
+.back_to_home {
+  background: #fe5252;
+  color: #ffffff;
+  border:1px solid #fe5252;
+  padding: 7px 24px;
+  transition: all 0.3s;
+  text-decoration: none;
+  letter-spacing: 1px;
+  transition: all .3s;
+}
+.back_to_home:hover {
+  background: transparent;
+  color:#fe5252;
 }
 @media (max-width: 768px) {
   .time_line .step {

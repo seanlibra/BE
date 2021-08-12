@@ -10,13 +10,15 @@
           </div>
           <div class="img_bk">
             <div>
-              <img src="https://i.imgur.com/x6hg5tY.jpg" />
+              <img src="https://i.imgur.com/wQm7Vsv.jpg" />
             </div>
           </div>
         </div>
         <div class="footer_group">
           <p>
-            B&E成立於2021年，適逢新型冠狀病毒在全世界蔓延，百業蕭條的時候，B&E不畏懼逆境，五月在網路平台完成展店。<br />
+            B&E成立於2021年，適逢新型冠狀病毒在全世界蔓延，百業蕭條的時候，B&E不畏懼逆境，五月在網路平台完成展店。
+          </p>
+          <p>
             B&E現主要販售項目為男女衣服及少量飾品，而預計未來會再擴展到鞋類等，也歡迎各類品牌廠商洽詢合作。
           </p>
         </div>
@@ -51,6 +53,7 @@ export default {
     align-items: center;
     justify-content: center;
     margin-bottom: 50px;
+    flex-wrap: wrap;
   }
   .content .top_group .logo_bk {
       display: flex;
@@ -85,5 +88,14 @@ export default {
       line-height: 28px;
       letter-spacing: 1px;
       text-align: left;
+  }
+  @media(max-width:768px) {
+    .top_group > div {
+      width: 100%;
+    }
+    .content {
+      width: 80%;
+      margin: 0 10%;
+    }
   }
 </style>

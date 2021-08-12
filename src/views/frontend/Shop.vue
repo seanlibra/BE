@@ -30,13 +30,17 @@
               <img class="default" :src="item.product.imageUrl" alt="" />
               <div class="product_overlay"></div>
             </router-link>
-            <h4 class="category">{{ item.product.category }}</h4>
+            <h4 class="category">
+              <router-link :to="`/shop/${item.product.category}`">
+                {{ item.product.category }}
+              </router-link>
+            </h4>
             <h3 class="title">
               <router-link :to="`/product/${item.product.id}`">{{
                 item.product.title
               }}</router-link>
             </h3>
-            <div class="price">
+            <router-link :to="`/product/${item.product.id}`" class="price">
               <span
                 :class="{
                   normal: item.product.price == item.product.origin_price,
@@ -49,7 +53,7 @@
                 class="onsale_price"
                 >$ {{ item.product.price }}</span
               >
-            </div>
+            </router-link>
           </li>
         </ul>
         <ul class="custom_pagination" v-if="pagination.allPage !== 1">
@@ -110,7 +114,6 @@ export default {
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/products/all`)
         .then(function (res) {
-          // console.log(res)
           if (res.data.success) {
             vm.product_list = res.data.products.slice().reverse()
             vm.$store.commit('startLoading', false)
@@ -146,9 +149,7 @@ export default {
     },
     product_page_list_process () {
       const list = [...this.current_category_product_list]
-      // const vm = this
       const newArray = []
-      // const filterArray = []
       let index = 0
       for (let i = 0; i < list.length; i++) {
         if (i % 9 === 0) {
@@ -333,6 +334,10 @@ export default {
   flex-direction: column;
   font-size: 16px;
 }
+.product_list .category a {
+  text-decoration: none;
+  color:inherit;
+}
 .product_list .title {
   font-size: 18px;
   color: #000000;
@@ -342,11 +347,16 @@ export default {
 .product_list .title a {
   text-decoration: none;
   color: inherit;
+  transition: all .3s;
+}
+.product_list .title a:hover {
+  color:#fe5252;
 }
 .product_list .price {
   font-family: "Sriracha", handwriting;
   color: #7e7e7e;
   font-size: 14px;
+  text-decoration: none;
 }
 .product_list .origin_price {
   text-decoration: line-through;

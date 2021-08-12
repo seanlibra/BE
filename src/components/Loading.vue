@@ -1,28 +1,41 @@
 <template>
-    <div class="loading_shadow" >
-        <div class="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-     </div>
+  <div class="loading_shadow">
+    <div class="lds-default">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
 /*======loading======*/
 .loading_shadow {
-    background: rgba(255,255,255,0.8);
-    position: fixed;
-    top:0;
-    right: 0;
-    bottom: 0;
-    left:0;
-    z-index: 9999;
-    transition: all .3s;
+  background: rgba(255, 255, 255, 0.8);
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 9999;
+  transition: all 0.3s;
 }
 .lds-default {
   display: inline-block;
   position: absolute;
   width: 80px;
   height: 80px;
-  top:50%;
-  left:50%;
+  top: 50%;
+  left: 50%;
   transform: translateX(-50%) translateY(-50%);
 }
 .lds-default div {
@@ -94,7 +107,10 @@
   left: 62px;
 }
 @keyframes lds-default {
-  0%, 20%, 80%, 100% {
+  0%,
+  20%,
+  80%,
+  100% {
     transform: scale(1);
   }
   50% {
