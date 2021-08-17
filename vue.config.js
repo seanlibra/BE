@@ -3,5 +3,13 @@ module.exports = {
   // 預設狀況下，部署到 GitHub Pages 可能會無法顯示畫面
   // 因此需要多設置該屬性
   // 官方文件：https://cli.vuejs.org/zh/config/#publicpath
+  chainWebpack: config => {
+    config
+      .plugin('html')
+      .tap(args => {
+        args[0].title = 'B&E - 時而隨性，時而優雅'
+        return args
+      })
+  },
   publicPath: './'
 }

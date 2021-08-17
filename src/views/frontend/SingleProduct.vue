@@ -181,6 +181,11 @@ export default {
   components: {
     Header, Footer, Sidebar, Loading, Swiper, SwiperSlide
   },
+  watch: {
+    $route (to, from) {
+      this.getProductDetail()
+    }
+  },
   created () {
     this.getProductDetail()
     this.pageUrl = document.location.href

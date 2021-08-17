@@ -122,6 +122,11 @@ export default {
   },
   components: {
     Header, Footer, Sidebar, Loading
+  },
+  watch: {
+    $route (to, from) {
+      this.getPost()
+    }
   }
 }
 </script>

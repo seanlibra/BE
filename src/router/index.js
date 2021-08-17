@@ -5,6 +5,9 @@ const routes = [
   {
     path: '/',
     name: 'Home',
+    meta: {
+      title: 'hello world'
+    },
     component: Home
   },
   {
