@@ -1,0 +1,102 @@
+[33mcommit 0a514cacc11788591e397d3beff48c73467c36e5[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Merge: 883cf01 cfcc46f
+Author: sean <seanlibra570@gmail.com>
+Date:   Tue Aug 17 18:24:19 2021 +0800
+
+    Merge branch 'main' of https://github.com/seanlibra/vue3_class_week8 into main
+
+[33mcommit 883cf01e4e3da1026fc110894590fadcbbf5d529[m
+Author: sean <seanlibra570@gmail.com>
+Date:   Tue Aug 17 18:10:08 2021 +0800
+
+    新增demo圖片
+
+[33mcommit cfcc46fc43f43069f1e1440716c9904fd74b58b9[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: seanlibra <52067628+seanlibra@users.noreply.github.com>
+Date:   Tue Aug 17 17:19:29 2021 +0800
+
+    Update README.md
+
+[33mcommit cc3b5a198229fabd75c797409d35b99191d316f5[m
+Author: sean <seanlibra570@gmail.com>
+Date:   Tue Aug 17 16:54:22 2021 +0800
+
+    修改網站標題&修正同元件reload
+
+[33mcommit 96c09ff1640370fe90e85c86d0b763e1e5044980[m
+Author: sean <seanlibra570@gmail.com>
+Date:   Thu Aug 12 22:13:10 2021 +0800
+
+    程式碼整理&第二版完成
+
+[33mcommit 77a9ed2ccd9fcbf60c4fdde88d452dda17be435a[m
+Author: sean <seanlibra570@gmail.com>
+Date:   Wed Aug 11 20:59:07 2021 +0800
+
+    完成快速瀏覽功能
+
+[33mcommit f6c6f256f0d5b698080dc8752bdc8c9deebb9332[m
+Author: sean <seanlibra570@gmail.com>
+Date:   Tue Aug 10 16:13:35 2021 +0800
+
+    新增產品規格及圖片切換功能
+
+[33mcommit 640e515dae977eb0c7730bfeecb39416ecec61f2[m
+Author: sean <seanlibra570@gmail.com>
+Date:   Sat Aug 7 19:15:11 2021 +0800
+
+    完成商城分頁功能
+
+[33mcommit 0f7a75ae73405756eae385940b78d465e6e909a4[m
+Author: sean <seanlibra570@gmail.com>
+Date:   Sun Jul 25 20:02:22 2021 +0800
+
+    增加關於我們
+
+[33mcommit 8ef44ed9d87a9ad81cd044b695bb8dffb63af02e[m
+Author: sean <seanlibra570@gmail.com>
+Date:   Sat Jul 24 13:43:50 2021 +0800
+
+    修改及壓縮圖片
+
+[33mcommit 6f2b0a44fc843144c6de45fa1c65dd4b09804afd[m
+Author: sean <seanlibra570@gmail.com>
+Date:   Sat Jul 24 04:39:08 2021 +0800
+
+    第一版完成
+
+[33mcommit 684b3ef336cb7c6dfcef64ac63bea958c217c254[m
+Author: sean <seanlibra570@gmail.com>
+Date:   Fri Jul 23 13:35:42 2021 +0800
+
+    商品上架完成
+
+[33mcommit 6422b6c62b0124a72adaabed57988ccdfe447112[m
+Author: sean <seanlibra570@gmail.com>
+Date:   Thu Jul 22 11:11:54 2021 +0800
+
+    完成所有結帳流程
+
+[33mcommit 49f67a49a7df156c7949e109648f35e40b120347[m
+Author: sean <seanlibra570@gmail.com>
+Date:   Wed Jul 21 14:53:30 2021 +0800
+
+    完成購物車功能及部分結帳功能
+
+[33mcommit 8662a1b1d596016cf5e3da79030604f962451db4[m
+Author: sean <seanlibra570@gmail.com>
+Date:   Mon Jul 19 21:15:32 2021 +0800
+
+    完成文章列表頁以及讀取效果
+
+[33mcommit e921211fdc3ca352deb46a8028d0e88b85711c0d[m
+Author: sean <seanlibra570@gmail.com>
+Date:   Mon Jul 19 13:55:23 2021 +0800
+
+    完成BLOG後台以及單頁
+
+[33mcommit f9d3bee0e38b67d5bc3e726364132d8b9cb3ce17[m
+Author: sean <seanlibra570@gmail.com>
+Date:   Sun Jul 18 12:29:18 2021 +0800
+
+    第一次上傳
