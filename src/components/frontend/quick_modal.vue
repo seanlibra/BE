@@ -20,13 +20,13 @@
             class="swiper_show_img"
           >
             <swiper-slide>
-              <img :src="product.imageUrl" />
+              <img :src="product.imageUrl" alt="商品預設圖" />
             </swiper-slide>
             <swiper-slide
               v-for="(item, index) in product.imagesUrl"
               :key="index"
             >
-              <img :src="item" />
+              <img :src="item" :alt="`商品圖片${ index + 1 }`"/>
             </swiper-slide>
           </swiper>
           <!-- ---------------------------------- -->
@@ -40,13 +40,13 @@
             class="swiper_thumb"
           >
             <swiper-slide>
-              <img :src="product.imageUrl" />
+              <img :src="product.imageUrl" alt="商品預設圖" />
             </swiper-slide>
             <swiper-slide
               v-for="(item, index) in product.imagesUrl"
               :key="index"
             >
-              <img :src="item" />
+              <img :src="item" :alt="`商品圖片${ index + 1 }`" />
             </swiper-slide>
           </swiper>
         </div>
@@ -124,12 +124,16 @@ export default {
   props: {
     product: Object
   },
+  emits: [
+    'clean-quick', 'quick-bubble', 'quick-carts'
+  ],
   data () {
     return {
       quick_modal_show: false,
       standardAlert: false,
       count: 1,
-      standard: ''
+      standard: '',
+      thumbsSwiper: null
     }
   },
   methods: {
@@ -152,16 +156,17 @@ export default {
         const readyToAdd = { data: { product_id: vm.product.id, qty: vm.count, standard: vm.standard } }
         vm.$store.commit('startLoading', true)
         vm.$http.post(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`, readyToAdd)
-          .then(function (res) {
+          .then(res => {
             if (res.data.success) {
               vm.standardAlert = false
               vm.$store.commit('startLoading', false)
               vm.$emit('quick-bubble', res.data.message)
               vm.$emit('quick-carts')
+            } else {
+              vm.$store.commit('startLoading', false)
             }
           })
-          .catch(function (err) {
-            alert(err)
+          .catch(() => {
             vm.$store.commit('startLoading', false)
           })
       }

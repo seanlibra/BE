@@ -50,14 +50,16 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/cart`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.carts = res.data.data.carts
             vm.$store.commit('startLoading', false)
+          } else {
+            vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.$store.commit('startLoading', false)
         })
     }
   },

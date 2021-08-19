@@ -72,6 +72,9 @@ export default {
     isnew: Boolean,
     coupon: Object
   },
+  emits: [
+    'bubbleOpen', 'emit-update'
+  ],
   data () {
     return {
       couponDetail: {
@@ -98,7 +101,7 @@ export default {
       const readyToAdd = { data: vm.couponDetail }
       vm.$store.commit('startLoading', true)
       vm.$http.post(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/coupon`, readyToAdd)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
@@ -109,8 +112,8 @@ export default {
             vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.$emit('bubbleOpen', '連線錯誤')
           vm.$store.commit('startLoading', false)
         })
     },
@@ -119,7 +122,7 @@ export default {
       const readyToUpdate = { data: vm.couponDetail }
       vm.$store.commit('startLoading', true)
       vm.$http.put(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/coupon/${vm.couponDetail.id}`, readyToUpdate)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
@@ -130,8 +133,8 @@ export default {
             vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.$emit('bubbleOpen', '連線錯誤')
           vm.$store.commit('startLoading', false)
         })
     }
@@ -183,6 +186,7 @@ export default {
   border-radius: 10px;
   box-shadow: 10px 10px 30px -10px rgb(0 0 0 / 25%);
   transition: all 0.5s;
+  z-index: 9;
 }
 .coupon_modal.active {
   top: 50%;

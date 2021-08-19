@@ -62,7 +62,7 @@
                       <img
                         class="thumbnail"
                         :src="item.product.imageUrl"
-                        alt=""
+                        alt="商品圖片"
                       />
                     </td>
                     <td>{{ item.product.title }}</td>
@@ -134,6 +134,9 @@ export default {
   props: {
     order: Object
   },
+  emits: [
+    'emit-update', 'bubbleOpen'
+  ],
   data () {
     return {
       modalStatus: false,
@@ -153,17 +156,20 @@ export default {
       const readyToUpdate = { data: vm.tempOrder }
       vm.$store.commit('startLoading', true)
       vm.$http.put(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/order/${vm.tempOrder.id}`, readyToUpdate)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.$emit('emit-update')
             vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
             vm.leaveModal()
+          } else {
+            vm.$emit('bubbleOpen', res.data.message)
+            vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
+        .catch(() => {
+          vm.$emit('bubbleOpen', '連線錯誤')
           vm.$store.commit('startLoading', false)
-          console.log(err)
         })
     },
     openModal () {

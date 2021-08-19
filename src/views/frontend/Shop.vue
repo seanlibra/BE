@@ -19,40 +19,45 @@
                 v-if="item.product.imagesUrl"
                 class="on_hover"
                 :src="item.product.imagesUrl[0]"
-                alt=""
+                alt="商品圖片二"
               />
               <img
                 v-else
                 class="on_hover"
                 :src="item.product.imageUrl"
-                alt=""
+                alt="商品圖片二"
               />
-              <img class="default" :src="item.product.imageUrl" alt="" />
+              <img
+                class="default"
+                :src="item.product.imageUrl"
+                alt="商品預設圖"
+              />
               <div class="product_overlay"></div>
             </router-link>
-            <h4 class="category">
-              <router-link :to="`/shop/${item.product.category}`">
+            <router-link
+              class="product_info_link"
+              :to="`/product/${item.product.id}`"
+            >
+              <h4 class="category">
                 {{ item.product.category }}
-              </router-link>
-            </h4>
-            <h3 class="title">
-              <router-link :to="`/product/${item.product.id}`">{{
-                item.product.title
-              }}</router-link>
-            </h3>
-            <router-link :to="`/product/${item.product.id}`" class="price">
-              <span
-                :class="{
-                  normal: item.product.price == item.product.origin_price,
-                }"
-                class="origin_price"
-                >$ {{ item.product.origin_price }}</span
-              >
-              <span
-                v-if="item.product.price !== item.product.origin_price"
-                class="onsale_price"
-                >$ {{ item.product.price }}</span
-              >
+              </h4>
+              <h3 class="title">
+                {{ item.product.title }}
+              </h3>
+              <div class="price">
+                <span
+                  :class="{
+                    normal: item.product.price == item.product.origin_price,
+                  }"
+                  class="origin_price"
+                  >$ {{ item.product.origin_price }}</span
+                >
+                <span
+                  v-if="item.product.price !== item.product.origin_price"
+                  class="onsale_price"
+                  >$ {{ item.product.price }}</span
+                >
+              </div>
             </router-link>
           </li>
         </ul>
@@ -88,6 +93,7 @@
     </div>
     <Loading v-if="loading"></Loading>
     <Footer></Footer>
+    <Bubble ref="bubble" :bubbleText="bubbleText"></Bubble>
   </div>
 </template>
 
@@ -101,11 +107,13 @@ export default {
   data () {
     return {
       product_list: [],
+      category_product_list: [],
       pagination: {
         allPage: 0,
         nowPage: 1
       },
-      category: ''
+      category: '',
+      bubbleText: ''
     }
   },
   methods: {
@@ -113,42 +121,49 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/products/all`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.product_list = res.data.products.slice().reverse()
+            vm.current_category_product_list(vm)
+            vm.$store.commit('startLoading', false)
+          } else {
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
             vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.bubbleText = '連線錯誤'
+          vm.$refs.bubble.bubbleACtive()
+          vm.$store.commit('startLoading', false)
         })
+    },
+    current_category_product_list (vm = this) {
+      const newList = [...vm.product_list]
+      vm.category_product_list = []
+      const nowCategory = vm.category || 'all'
+      if (nowCategory !== 'all') {
+        newList.forEach(item => {
+          if (item.category === nowCategory) {
+            vm.category_product_list.push(item)
+          }
+        })
+      } else {
+        vm.category_product_list = [...vm.product_list]
+      }
     },
     change_category (category) {
       this.category = category
       this.pagination.nowPage = 1
+      this.current_category_product_list()
     }
   },
   computed: {
     loading () {
       return this.$store.state.isLoading
     },
-    current_category_product_list () {
-      const list = [...this.product_list]
-      let newList = []
-      const nowCategory = this.$route.params.category || 'all'
-      if (nowCategory !== 'all') {
-        list.forEach(function (item) {
-          if (item.category === nowCategory) {
-            newList.push(item)
-          }
-        })
-      } else {
-        newList = list
-      }
-      return newList
-    },
     product_page_list_process () {
-      const list = [...this.current_category_product_list]
+      const list = [...this.category_product_list]
       const newArray = []
       let index = 0
       for (let i = 0; i < list.length; i++) {
@@ -178,16 +193,16 @@ export default {
       const originCategoryList = []
       let newCategoryList = []
       const newProductList = []
-      list.forEach(function (item) {
+      list.forEach(item => {
         originCategoryList.push(item.category)
       })
-      newCategoryList = originCategoryList.filter(function (item, index) {
+      newCategoryList = originCategoryList.filter((item, index) => {
         return originCategoryList.indexOf(item) === index
       })
       for (let i = 0; i < newCategoryList.length; i++) {
         newProductList.push({ category: newCategoryList[i], count: 0 })
       }
-      list.filter(function (item) {
+      list.filter(item => {
         for (let i = 0; i < newProductList.length; i++) {
           if (item.category === newProductList[i].category) {
             newProductList[i].count++
@@ -229,13 +244,12 @@ export default {
 }
 .product_list li {
   width: 31%;
-  margin: 0 1% 2% 1%;
+  margin: 0 1% 5% 1%;
   list-style: none;
   position: relative;
 }
 .product_list li .product_thumbnail {
   position: relative;
-  margin-bottom: 15px;
   display: block;
 }
 .product_list li .product_thumbnail .default {
@@ -249,6 +263,11 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
+}
+.product_list li .product_info_link {
+  display: block;
+  text-decoration: none;
+  padding-top: 15px;
 }
 .product_list li .product_thumbnail:hover .default {
   opacity: 0;
@@ -343,13 +362,9 @@ export default {
   color: #000000;
   margin-bottom: 10px;
   letter-spacing: 1px;
-}
-.product_list .title a {
-  text-decoration: none;
-  color: inherit;
   transition: all .3s;
 }
-.product_list .title a:hover {
+.product_list .title:hover {
   color:#fe5252;
 }
 .product_list .price {
@@ -410,6 +425,9 @@ export default {
   }
 }
 @media (max-width: 414px) {
+  .product_list li {
+    margin: 0 1% 10% 1%;
+  }
   .product_list_group {
     width: 100%;
   }

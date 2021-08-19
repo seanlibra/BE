@@ -32,12 +32,14 @@ export default {
     isall: Boolean,
     coupon: Object
   },
+  emits: [
+    'bubbleOpen', 'emit-update'
+  ],
   data () {
     return {
       modalStatus: false,
       path: process.env.VUE_APP_PATH,
       url: process.env.VUE_APP_API,
-      token: '',
       tempCoupon: {}
     }
   },
@@ -56,19 +58,19 @@ export default {
           Authorization: vm.token
         }
       })
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
             vm.leaveModal()
             vm.$emit('emit-update')
           } else {
-            alert(res.data.message)
+            vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.$emit('bubbleOpen', '連線錯誤')
           vm.$store.commit('startLoading', false)
         })
     }
@@ -77,10 +79,6 @@ export default {
     coupon () {
       this.tempCoupon = { ...this.coupon }
     }
-  },
-  created () {
-    const token = document.cookie.replace(/(?:(?:^|.*;\s*)vue_class\s*=\s*([^;]*).*$)|^.*$/, '$1')
-    this.token = token
   }
 }
 </script>

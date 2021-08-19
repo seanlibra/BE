@@ -39,11 +39,11 @@ export default {
       const originCategoryList = []
       let newCategoryList = []
       if (list.length > 1) {
-        list.forEach(function (item) {
+        list.forEach(item => {
           originCategoryList.push(item.tag)
         })
       }
-      newCategoryList = originCategoryList.filter(function (item, index) {
+      newCategoryList = originCategoryList.filter((item, index) => {
         return originCategoryList.indexOf(item) === index
       })
       return newCategoryList

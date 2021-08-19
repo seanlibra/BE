@@ -24,7 +24,7 @@
                   <span class="material-icons"> person </span>
                   <span>{{ post.author }}</span>
                 </div>
-                <div class="info_group">
+                <div class="info_group time">
                   <span class="material-icons"> schedule </span>
                   <span>{{ fix_data_format(post) }}</span>
                 </div>
@@ -45,6 +45,7 @@
     </div>
     <Loading v-if="loading"></Loading>
     <Footer></Footer>
+    <Bubble ref="bubble" :bubbleText="bubbleText"></Bubble>
   </div>
 </template>
 
@@ -60,7 +61,8 @@ export default {
       path: process.env.VUE_APP_PATH,
       url: process.env.VUE_APP_API,
       post: {},
-      post_list: []
+      post_list: [],
+      bubbleText: ''
     }
   },
   methods: {
@@ -68,14 +70,18 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/articles?page=${page}`)
-        .then(function (res) {
+        .then((res) => {
           if (res.data.success) {
             vm.post_list = res.data.articles
             vm.$store.commit('startLoading', false)
+          } else {
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.bubbleText = '連線錯誤'
+          vm.$refs.bubble.bubbleACtive()
         })
     },
     fix_data_format (post) {
@@ -93,7 +99,7 @@ export default {
       let newList = []
       const nowCategory = this.$route.params.tag || 'all'
       if (nowCategory !== 'all') {
-        list.forEach(function (item) {
+        list.forEach((item) => {
           if (item.tag === nowCategory) {
             newList.push(item)
           }
@@ -223,5 +229,16 @@ export default {
   .post_list li {
     padding: 10px;
   }
+  .post_info .info_group {
+    font-size: 16px;
+    margin: 0 5px;
+    width: 45%;
+  }
+  .post_info .info_group.time {
+    display: none;
+  }
+  /* .post_info .info_group span {
+    font-size: 14px;
+  } */
 }
 </style>

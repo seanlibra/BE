@@ -18,11 +18,11 @@
                 type="text"
                 class="form-control mb-3"
                 name=""
-                id=""
+                id="imgUrl"
                 placeholder="請輸入圖片連結"
               />
             </div>
-            <img class="img-fluid" :src="detail.imageUrl" alt="" />
+            <img class="img-fluid" :src="detail.imageUrl" alt="商品預設圖片" />
             <div class="form-group">
               <label for="imageUrl">其他圖片</label>
               <div class="images_controler">
@@ -31,7 +31,7 @@
                   type="text"
                   class="form-control"
                   name=""
-                  id=""
+                  id="imgsUrl"
                   placeholder="請輸入圖片連結"
                 />
                 <a @click.prevent="addImagesUrl" href="#">新增圖片</a>
@@ -191,12 +191,14 @@
 </template>
 
 <script>
-// import Modal from 'bootstrap/js/dist/modal'
 export default {
   props: {
     product: Object,
     isNew: Boolean
   },
+  emits: [
+    'bubbleOpen', 'emitAdd', 'emitUpdate'
+  ],
   data () {
     return {
       standard: '',
@@ -217,40 +219,45 @@ export default {
     },
     addProduct () {
       const vm = this
-      var readToAdd = { data: this.detail }
+      const readToAdd = { data: this.detail }
       vm.$store.commit('startLoading', true)
       vm.$http.post(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product`, readToAdd)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
             vm.$emit('emitAdd')
             vm.leaveModal()
           } else {
-            alert(res.data.message)
+            vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
           }
+        })
+        .catch(() => {
+          vm.$emit('bubbleOpen', '連線錯誤')
+          vm.$store.commit('startLoading', false)
         })
     },
     updateProduct () {
       const vm = this
       vm.$store.commit('startLoading', true)
-      var readyToUpdate = { data: vm.detail }
+      const readyToUpdate = { data: vm.detail }
       console.log(vm.detail)
       vm.$http.put(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${vm.detail.id}`, readyToUpdate)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
             vm.$emit('emitUpdate')
             vm.leaveModal()
           } else {
-            alert(res.data.message)
+            vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.$emit('bubbleOpen', '連線錯誤')
+          vm.$store.commit('startLoading', false)
         })
     },
     addStandard () {

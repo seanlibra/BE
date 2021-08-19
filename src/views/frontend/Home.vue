@@ -29,9 +29,15 @@
               v-if="item.imagesUrl[0]"
               class="on_hover"
               :src="item.imagesUrl[0]"
-              alt=""
+              alt="商品圖片二"
             />
-            <img class="default" :src="item.imageUrl" alt="" />
+            <img
+              v-else
+              class="on_hover"
+              :src="item.imageUrl"
+              alt="商品圖片二"
+            />
+            <img class="default" :src="item.imageUrl" alt="商品預設圖片" />
             <div class="product_overlay"></div>
             <a @click.prevent="open_quick(item)" class="quick_view" href="#">
               <span class="material-icons mx-2">visibility</span>
@@ -105,16 +111,14 @@
               <span class="read_more">了解更多</span>
             </router-link>
             <div class="post_content">
-              <h3>
-                <router-link :to="`/post/${item.id}`">{{
-                  item.title
-                }}</router-link>
-              </h3>
-              <div class="excerpt">
-                <router-link :to="`/post/${item.id}`">{{
-                  item.description
-                }}</router-link>
-              </div>
+              <router-link :to="`/post/${item.id}`">
+                <h3>
+                  {{ item.title }}
+                </h3>
+                <div class="excerpt">
+                  {{ item.description }}
+                </div>
+              </router-link>
             </div>
             <div class="post_info">
               <div class="d-flex align-items-center">
@@ -133,13 +137,13 @@
         </ul>
       </div>
     </div>
-    <quickModal
+    <QuickModal
       @quick-carts="quick_carts_reload"
       @quick-bubble="quick_bubble"
       @clean-quick="quick_product = {}"
       ref="quick_modal"
       :product="quick_product"
-    ></quickModal>
+    ></QuickModal>
     <Loading v-if="loading"></Loading>
     <Footer></Footer>
     <Bubble ref="bubble" :bubbleText="bubbleText"></Bubble>
@@ -150,7 +154,7 @@
 import Header from '@/components/frontend/Header.vue'
 import Footer from '@/components/frontend/Footer.vue'
 import Loading from '@/components/Loading.vue'
-import quickModal from '@/components/frontend/quick_modal'
+import QuickModal from '@/components/frontend/Quick_modal'
 export default {
   name: 'Home',
   data () {
@@ -194,15 +198,21 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/products?page=${page}`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.product_list = res.data.products
             vm.pagination = res.data.pagination
             vm.$store.commit('startLoading', false)
+          } else {
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
+            vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          alert(err)
+        .catch(() => {
+          vm.bubbleText = '連線錯誤'
+          vm.$refs.bubble.bubbleACtive()
+          vm.$store.commit('startLoading', false)
         })
     },
     open_quick (item) {
@@ -220,14 +230,19 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/product/${item.id}`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.quick_product = res.data.product
             vm.$store.commit('startLoading', false)
+          } else {
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
+            vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          alert(err)
+        .catch(() => {
+          vm.bubbleText = '連線錯誤'
+          vm.$refs.bubble.bubbleACtive()
           vm.$store.commit('startLoading', false)
         })
     },
@@ -235,14 +250,20 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/articles?page=${page}`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.news_list = res.data.articles
             vm.$store.commit('startLoading', false)
+          } else {
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
+            vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          alert(err)
+        .catch(() => {
+          vm.bubbleText = '連線錯誤'
+          vm.$refs.bubble.bubbleACtive()
+          vm.$store.commit('startLoading', false)
         })
     }
   },
@@ -271,7 +292,7 @@ export default {
     this.getNews()
   },
   components: {
-    Header, Footer, Loading, quickModal
+    Header, Footer, Loading, QuickModal
   }
 }
 </script>
@@ -644,9 +665,15 @@ export default {
    }
     .news_list li .post_content {
      border:1px solid #f0eff0;
-     padding: 15px;
+     /* padding: 15px; */
      background: #ffffff;
      min-height: 120px;
+   }
+   .news_list li .post_content a {
+     text-decoration: none;
+     display: block;
+     padding: 15px;
+     height: 100%;
    }
     .news_list li .post_content h3 {
      text-align: center;
@@ -655,15 +682,16 @@ export default {
      letter-spacing: 1px;
      font-family: 'Noto Sans TC', sans-serif;
    }
-   .news_list li .post_content h3 a {
+   .news_list li .post_content h3  {
      transition: all .3s;
      text-decoration: none;
      color:inherit;
+     color:#000000;
    }
-   .news_list li .post_content h3 a:hover {
+   .news_list li .post_content h3:hover {
      color:#fe5252;
    }
-    .news_list li .post_content .excerpt a {
+    .news_list li .post_content .excerpt {
      font-size: 16px;
      letter-spacing: 1px;
      font-family: 'Noto Sans TC', sans-serif;
@@ -671,7 +699,7 @@ export default {
      color:#000000;
      transition: all .3s;
    }
-   .news_list li .post_content .excerpt a:hover {
+   .news_list li .post_content .excerpt:hover {
      color:#fe5252;
    }
     .news_list li .post_info {

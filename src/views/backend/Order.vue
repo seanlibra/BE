@@ -114,15 +114,21 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       this.$http.get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/orders?page=${page}`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.list = res.data.orders
             vm.pagination = res.data.pagination
             vm.$store.commit('startLoading', false)
+          } else {
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
+            vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.bubbleText = '連線錯誤'
+          vm.$refs.bubble.bubbleACtive()
+          vm.$store.commit('startLoading', false)
         })
     },
     fix_time_format (time) {

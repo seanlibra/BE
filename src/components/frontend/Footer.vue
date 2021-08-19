@@ -135,14 +135,16 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/articles?page=${page}`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.news_list = res.data.articles
             vm.$store.commit('startLoading', false)
+          } else {
+            vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.$store.commit('startLoading', false)
         })
     }
   },

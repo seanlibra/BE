@@ -51,7 +51,7 @@
                 </td>
                 <td>
                   <div class="product_thumbnail">
-                    <img :src="item.product.imageUrl" />
+                    <img :src="item.product.imageUrl" alt="商品圖片" />
                     <h3>{{ item.product.title }}</h3>
                   </div>
                 </td>
@@ -180,15 +180,20 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/cart`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.list = res.data.data.carts
             vm.cart_info = res.data
             vm.$store.commit('startLoading', false)
+          } else {
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
+            vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.bubbleText = '連線錯誤'
+          vm.$refs.bubble.bubbleACtive()
           vm.$store.commit('startLoading', false)
         })
     },
@@ -196,17 +201,22 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.delete(`${vm.url}/api/${vm.path}/cart/${item.id}`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.getCartList()
-            vm.$store.commit('startLoading', false)
             vm.bubbleText = res.data.message
             vm.$refs.bubble.bubbleACtive()
             vm.cartUpdteTrigger = !vm.cartUpdteTrigger
+            vm.$store.commit('startLoading', false)
+          } else {
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
+            vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.bubbleText = '連線錯誤'
+          vm.$refs.bubble.bubbleACtive()
           vm.$store.commit('startLoading', false)
         })
     },
@@ -218,17 +228,22 @@ export default {
         vm.$store.commit('startLoading', true)
         const readyForUpdate = { data: { product_id: item.id, qty: count } }
         vm.$http.put(`${vm.url}/api/${vm.path}/cart/${item.id}`, readyForUpdate)
-          .then(function (res) {
+          .then(res => {
             if (res.data.success) {
               vm.getCartList()
               vm.bubbleText = res.data.message
-              vm.$store.commit('startLoading', false)
               vm.$refs.bubble.bubbleACtive()
               vm.cartUpdteTrigger = !vm.cartUpdteTrigger
+              vm.$store.commit('startLoading', false)
+            } else {
+              vm.bubbleText = res.data.message
+              vm.$refs.bubble.bubbleACtive()
+              vm.$store.commit('startLoading', false)
             }
           })
-          .catch(function (err) {
-            console.log(err)
+          .catch(() => {
+            vm.bubbleText = '連線錯誤'
+            vm.$refs.bubble.bubbleACtive()
             vm.$store.commit('startLoading', false)
           })
       }
@@ -238,22 +253,24 @@ export default {
       const coupon = { data: { code: vm.couponCode } }
       vm.$store.commit('startLoading', true)
       vm.$http.post(`${vm.url}/api/${vm.path}/coupon`, coupon)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.getCartList()
             vm.bubbleText = res.data.message
-            vm.$store.commit('startLoading', false)
             vm.$refs.bubble.bubbleACtive()
             vm.cartUpdteTrigger = !vm.cartUpdteTrigger
             vm.coupon = true
+            vm.$store.commit('startLoading', false)
           } else {
             vm.bubbleText = res.data.message
-            vm.$store.commit('startLoading', false)
             vm.$refs.bubble.bubbleACtive()
+            vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.bubbleText = '連線錯誤'
+          vm.$refs.bubble.bubbleACtive()
+          vm.$store.commit('startLoading', false)
         })
     }
   },
@@ -650,6 +667,20 @@ input[type="number"] {
 @media (max-width: 375px) {
   .time_line {
     display: none;
+  }
+  .coupon_container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .coupon_container > input {
+    width:100%;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  .coupon_container > a {
+    width:100%;
+    border-radius: 5px!important;
+    text-align:center;
   }
 }
 </style>

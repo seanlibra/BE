@@ -21,7 +21,7 @@
                 placeholder="請輸入圖片連結"
               />
             </div>
-            <img class="img-fluid" :src="tempPost.imageUrl" alt="" />
+            <img class="img-fluid" :src="tempPost.imageUrl" alt="文章特色圖片" />
             <div class="form-group mt-2">
               <label class="my-1" for="title">文章標題</label>
               <input
@@ -113,6 +113,9 @@ export default {
     isnew: Boolean,
     editId: String
   },
+  emits: [
+    'bubbleOpen', 'update', 'delete_id'
+  ],
   data () {
     return {
       editor: ClassicEditor,
@@ -147,7 +150,7 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/article/${vm.editId}`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.tempPost = res.data.article
             const dateAndTime = new Date(vm.tempPost.create_at * 1000)
@@ -155,12 +158,12 @@ export default {
             vm.due_date = dateAndTime[0]
             vm.$store.commit('startLoading', false)
           } else {
-            alert(res.data.message)
+            vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.$emit('bubbleOpen', '連線錯誤')
           vm.$store.commit('startLoading', false)
         })
     },
@@ -169,21 +172,20 @@ export default {
       vm.$store.commit('startLoading', true)
       const readyToUpdate = { data: this.tempPost }
       vm.$http.put(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/article/${vm.editId}`, readyToUpdate)
-        .then(function (res) {
-          console.log(res)
+        .then(res => {
           if (res.data.success) {
             vm.$store.commit('startLoading', false)
             vm.$emit('bubbleOpen', res.data.message)
             vm.$emit('update')
             vm.leaveModal()
           } else {
-            alert(res.data.message)
+            vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
+        .catch(() => {
+          vm.$emit('bubbleOpen', '連線錯誤')
           vm.$store.commit('startLoading', false)
-          alert(err.message)
         })
     },
     leaveModal () {
@@ -195,16 +197,20 @@ export default {
       const readToAdd = { data: this.tempPost }
       vm.$store.commit('startLoading', true)
       vm.$http.post(`${vm.url}/api/${vm.path}/admin/article`, readToAdd)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
             vm.$emit('update')
             vm.leaveModal()
           } else {
-            alert(res.data.message)
+            vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
           }
+        })
+        .catch(() => {
+          vm.$emit('bubbleOpen', '連線錯誤')
+          vm.$store.commit('startLoading', false)
         })
     }
   },

@@ -39,12 +39,14 @@
       <div></div>
     </div>
   </div>
+  <Bubble ref="bubble" :bubbleText="bubbleText"></Bubble>
 </template>
 
 <script>
 export default {
   data () {
     return {
+      bubbleText: ''
     }
   },
   methods: {
@@ -52,32 +54,45 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.post(`${process.env.VUE_APP_API}/logout`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
-            vm.$store.commit('startLoading', false)
-            alert(res.data.message)
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
             document.cookie = 'vue_class=; expires=; path=/'
-            vm.$router.push('/login')
+            setTimeout(() => {
+              vm.$router.push('/login')
+              vm.$store.commit('startLoading', false)
+            }, 3000)
           } else {
-            alert(res.data.message)
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
+            vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.bubbleText = '連線錯誤'
+          vm.$refs.bubble.bubbleACtive()
+          vm.$store.commit('startLoading', false)
         })
     },
     checkLogin () {
       const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.post(`${process.env.VUE_APP_API}/api/user/check`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.$store.commit('startLoading', false)
           } else {
-            alert('驗證錯誤,請重新登入')
-            vm.$store.commit('startLoading', false)
-            vm.$router.push('/login')
+            setTimeout(() => {
+              vm.$router.push('/login')
+              vm.$store.commit('startLoading', false)
+            }, 3000)
           }
+        })
+        .catch(() => {
+          vm.bubbleText = '連線錯誤'
+          vm.$refs.bubble.bubbleACtive()
+          vm.$store.commit('startLoading', false)
         })
     }
   },

@@ -10,7 +10,7 @@
             <span class="material-icons"> person </span>
             <span>{{ post.author }}</span>
           </div>
-          <div class="info_group">
+          <div class="info_group time">
             <span class="material-icons"> schedule </span>
             <span>{{ fix_data_format() }}</span>
           </div>
@@ -52,6 +52,7 @@
     </div>
     <Loading v-if="loading"></Loading>
     <Footer></Footer>
+    <Bubble ref="bubble" :bubbleText="bubbleText"></Bubble>
   </div>
 </template>
 
@@ -67,7 +68,8 @@ export default {
       url: process.env.VUE_APP_API,
       post: {},
       post_list: [],
-      pageUrl: ''
+      pageUrl: '',
+      bubbleText: ''
     }
   },
   methods: {
@@ -75,14 +77,19 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/articles?page=${page}`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.post_list = res.data.articles
             vm.$store.commit('startLoading', false)
+          } else {
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
+            vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.bubbleText = '連線錯誤'
+          vm.$refs.bubble.bubbleACtive()
           vm.$store.commit('startLoading', false)
         })
     },
@@ -91,14 +98,19 @@ export default {
       const id = vm.$route.params.id
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/article/${id}`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.post = res.data.article
             vm.$store.commit('startLoading', false)
+          } else {
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
+            vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.bubbleText = '連線錯誤'
+          vm.$refs.bubble.bubbleACtive()
           vm.$store.commit('startLoading', false)
         })
     },
@@ -179,6 +191,7 @@ export default {
   font-size: 30px;
 }
 .post_info {
+  font-family: "Noto Sans TC", sans-serif;
   border-top: 1px solid #f1f1f1;
   border-bottom: 1px solid #f1f1f1;
   padding: 15px 0;
@@ -241,6 +254,23 @@ img {
   .share_this_post_title {
     font-size: 24px;
     font-weight: bold;
+  }
+  .post_info .info_group {
+    font-size: 16px;
+    margin: 0 5px;
+    width: 45%;
+  }
+  .post_info .info_group.time {
+    display: none;
+  }
+}
+@media(max-width: 320px) {
+  .post_info .info_group {
+    font-size: 14px;
+    margin: 0 3px;
+  }
+  .post_info .info_group .material-icons {
+    font-size: 14px;
   }
 }
 </style>

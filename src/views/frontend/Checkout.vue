@@ -26,7 +26,7 @@
             @submit="submit_order"
           >
             <div class="mb-3">
-              <label for="name" class="form-label">姓名</label>
+              <label for="name" class="form-label">姓名<span class="text-danger">*</span></label>
               <Field
                 id="name"
                 name="姓名"
@@ -43,7 +43,7 @@
               ></error-message>
             </div>
             <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
+              <label for="email" class="form-label">Email<span class="text-danger">*</span></label>
               <Field
                 id="email"
                 name="email"
@@ -60,7 +60,7 @@
               ></error-message>
             </div>
             <div class="mb-3">
-              <label for="tel" class="form-label">電話</label>
+              <label for="tel" class="form-label">電話<span class="text-danger">*</span></label>
               <Field
                 id="tel"
                 name="電話"
@@ -68,7 +68,7 @@
                 class="form-control"
                 :class="{ 'is-invalid': errors['電話'] }"
                 placeholder="請輸入電話號碼"
-                rules="min:8"
+                rules="min:8|required"
                 v-model="form.user.tel"
               ></Field>
               <error-message
@@ -77,7 +77,7 @@
               ></error-message>
             </div>
             <div class="mb-3">
-              <label for="address" class="form-label">地址</label>
+              <label for="address" class="form-label">地址<span class="text-danger">*</span></label>
               <Field
                 id="address"
                 name="地址"
@@ -112,11 +112,12 @@
         <div class="order_detail_block">
           <div class="order">
             <h3 class="order_title">訂單內容</h3>
+            <div class="table_scroll_bar_container">
             <table class="order_table">
               <tbody>
                 <tr v-for="item in cartList" :key="item.id">
                   <td>
-                    <img class="thumbnail" :src="item.product.imageUrl" />
+                    <img class="thumbnail" :src="item.product.imageUrl" alt="商品圖片" />
                   </td>
                   <td>
                     <div class="product_title">
@@ -150,6 +151,7 @@
                 </tr>
               </tbody>
             </table>
+            </div>
             <div class="order_total_container">
               <span>總計：</span>
               <div class="price_container">
@@ -174,6 +176,7 @@
     </div>
     <Loading v-if="loading"></Loading>
     <Footer></Footer>
+    <Bubble ref="bubble" :bubbleText="bubbleText"></Bubble>
   </div>
 </template>
 
@@ -185,8 +188,7 @@ import Loading from '@/components/Loading.vue'
 export default {
   data () {
     return {
-      path: process.env.VUE_APP_PATH,
-      url: process.env.VUE_APP_API,
+      bubbleText: '',
       form: {
         user: {
           name: '',
@@ -208,32 +210,44 @@ export default {
     getCartList () {
       const vm = this
       vm.$store.commit('startLoading', true)
-      vm.$http.get(`${vm.url}/api/${vm.path}/cart`)
-        .then(function (res) {
+      vm.$http.get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`)
+        .then(res => {
           if (res.data.success) {
             vm.cartList = res.data.data.carts
             vm.cart_info = res.data
             vm.$store.commit('startLoading', false)
+          } else {
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
+            vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.bubbleText = '連線錯誤'
+          vm.$refs.bubble.bubbleACtive()
+          vm.$store.commit('startLoading', false)
         })
     },
     submit_order () {
       const vm = this
       vm.$store.commit('startLoading', true)
       const readyToOrder = { data: vm.form, message: vm.message }
-      vm.$http.post(`${vm.url}/api/${vm.path}/order`, readyToOrder)
-        .then(function (res) {
+      vm.$http.post(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/order`, readyToOrder)
+        .then(res => {
           if (res.data.success) {
             const id = res.data.orderId
             vm.$router.push(`/finishorder/${id}`)
             // vm.$refs.form.resetForm()
           } else {
-            console.log(res)
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
             vm.$store.commit('startLoading', false)
           }
+        })
+        .catch(() => {
+          vm.bubbleText = '連線錯誤'
+          vm.$refs.bubble.bubbleACtive()
+          vm.$store.commit('startLoading', false)
         })
     }
   },
@@ -355,14 +369,14 @@ export default {
 .content {
   display: flex;
   flex-wrap: wrap;
-  padding: 0 10%;
+  padding: 0 5%;
 }
 .client_info_block {
-  width: 48%;
+  width: 38%;
   margin: 0 1%;
 }
 .order_detail_block {
-  width: 48%;
+  width: 58%;
   margin: 0 1%;
   background: #ffefea;
   padding: 15px;
@@ -441,7 +455,7 @@ export default {
 .price_container .final_total {
   font-weight: bold;
 }
-@media (max-width: 768px) {
+@media(max-width:1024px) {
   .content {
     flex-direction: column-reverse;
   }
@@ -452,6 +466,8 @@ export default {
     width: 100%;
     margin-bottom: 30px;
   }
+}
+@media (max-width: 768px) {
   .time_line .step {
     margin: 0 25px;
   }
@@ -481,6 +497,14 @@ export default {
   .list_title {
     font-size: 24px;
     font-weight: bold;
+  }
+  .table_scroll_bar_container {
+    overflow-x: scroll;
+    width: 100%;
+    padding: 20px 0;
+  }
+  .order_table {
+    min-width: 600px;
   }
 }
 @media (max-width: 375px) {

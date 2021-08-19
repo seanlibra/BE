@@ -22,6 +22,9 @@ export default {
   props: {
     product: Object
   },
+  emits: [
+    'bubbleOpen', 'emit-del'
+  ],
   data () {
     return {
       modalStatus: false
@@ -38,20 +41,20 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.delete(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${vm.product.id}`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.$store.commit('startLoading', false)
             vm.$emit('bubbleOpen', res.data.message)
             vm.leaveModal()
             vm.$emit('emit-del')
           } else {
-            alert(res.data.message)
+            vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
+        .catch(() => {
+          vm.$emit('bubbleOpen', '連線錯誤')
           vm.$store.commit('startLoading', false)
-          alert(err.data.message)
           vm.leaveModal()
         })
     }

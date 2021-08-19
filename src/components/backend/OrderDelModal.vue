@@ -31,6 +31,9 @@ export default {
     order: Object,
     isall: Boolean
   },
+  emits: [
+    'bubbleOpen', 'emit-delete'
+  ],
   data () {
     return {
       modalStatus: false,
@@ -48,7 +51,7 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.delete(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/order/${vm.tempOrder.id}`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.$emit('bubbleOpen', res.data.message)
             vm.$emit('emit-delete')
@@ -59,15 +62,16 @@ export default {
             vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.$emit('bubbleOpen', '連線錯誤')
+          vm.$store.commit('startLoading', false)
         })
     },
     delAllOrder () {
       const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.delete(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/orders/all`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.$emit('bubbleOpen', res.data.message)
             vm.$store.commit('startLoading', false)
@@ -78,8 +82,9 @@ export default {
             vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.$emit('bubbleOpen', '連線錯誤')
+          vm.$store.commit('startLoading', false)
         })
     }
   },

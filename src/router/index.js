@@ -3,11 +3,14 @@ import Home from '../views/frontend/Home.vue'
 
 const routes = [
   {
+    path: '/:pathMatch(.*)*',
+    redirect: {
+      name: 'Home'
+    }
+  },
+  {
     path: '/',
     name: 'Home',
-    meta: {
-      title: 'hello world'
-    },
     component: Home
   },
   {
@@ -76,7 +79,13 @@ const routes = [
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes
+  routes,
+  scrollBehavior () {
+    return {
+      top: 0,
+      behavior: 'smooth'
+    }
+  }
 })
 
 export default router

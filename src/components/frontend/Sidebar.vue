@@ -64,6 +64,9 @@ export default {
   props: {
     productsCategory: Array
   },
+  emits: [
+    'emit-category'
+  ],
   data () {
     return {
       path: process.env.VUE_APP_PATH,
@@ -78,14 +81,16 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.get(`${vm.url}/api/${vm.path}/products/all`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.product_list = res.data.products
             vm.$store.commit('startLoading', false)
+          } else {
+            vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.$store.commit('startLoading', false)
         })
     },
     change_category (category) {
@@ -106,7 +111,7 @@ export default {
       let newList = []
       const nowCategory = this.$route.params.category || 'all'
       if (nowCategory !== 'all') {
-        list.forEach(function (item) {
+        list.forEach(item => {
           if (item.category === nowCategory) {
             newList.push(item)
           }
@@ -121,16 +126,16 @@ export default {
       const originCategoryList = []
       let newCategoryList = []
       const newProductList = []
-      list.forEach(function (item) {
+      list.forEach(item => {
         originCategoryList.push(item.category)
       })
-      newCategoryList = originCategoryList.filter(function (item, index) {
+      newCategoryList = originCategoryList.filter((item, index) => {
         return originCategoryList.indexOf(item) === index
       })
       for (let i = 0; i < newCategoryList.length; i++) {
         newProductList.push({ category: newCategoryList[i], count: 0 })
       }
-      list.filter(function (item) {
+      list.filter(item => {
         for (let i = 0; i < newProductList.length; i++) {
           if (item.category === newProductList[i].category) {
             newProductList[i].count++

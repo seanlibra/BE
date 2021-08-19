@@ -10,7 +10,7 @@
           </div>
           <div class="img_bk">
             <div>
-              <img src="https://i.imgur.com/wQm7Vsv.jpg" />
+              <img src="https://i.imgur.com/wQm7Vsv.jpg" alt="關於我們裝飾圖片" />
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 <template>
-    <div :class="{ active : isShow }" class="bubble">{{bubbleText}}</div>
+  <div :class="{ active: isShow }" class="bubble">{{ bubbleText }}</div>
 </template>
 
 <script>
@@ -14,7 +14,7 @@ export default {
   },
   methods: {
     bubbleACtive () {
-      var vm = this
+      const vm = this
       vm.isShow = true
       setTimeout(() => {
         vm.isShow = false

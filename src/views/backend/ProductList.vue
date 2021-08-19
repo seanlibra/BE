@@ -29,7 +29,7 @@
     <tbody>
       <tr class="single_product" v-for="item in list" :key="item.id">
         <td class="text-center">
-          <img class="thumbnail" :src="item.imageUrl" alt="" />
+          <img class="thumbnail" :src="item.imageUrl" alt="商品圖片" />
         </td>
         <td>
           {{ item.title }}
@@ -122,18 +122,21 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       this.$http.get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/products?page=${page}`)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             vm.list = res.data.products
-            vm.list.forEach(function (item) {
-              // item.imagesUrl = []
-            })
             vm.pagination = res.data.pagination
+            vm.$store.commit('startLoading', false)
+          } else {
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
             vm.$store.commit('startLoading', false)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.bubbleText = '連線錯誤'
+          vm.$refs.bubble.bubbleACtive()
+          vm.$store.commit('startLoading', false)
         })
     },
     changePage (page) {

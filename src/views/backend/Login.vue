@@ -61,6 +61,7 @@
       </div>
     </div>
   </div>
+  <Bubble ref="bubble" :bubbleText="bubbleText"></Bubble>
 </template>
 
 <script>
@@ -68,7 +69,8 @@ export default {
   data () {
     return {
       username: '',
-      password: ''
+      password: '',
+      bubbleText: ''
     }
   },
   methods: {
@@ -80,21 +82,26 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       vm.$http.post(`${process.env.VUE_APP_API}/admin/signin`, user)
-        .then(function (res) {
+        .then(res => {
           if (res.data.success) {
             const token = res.data.token
             const expired = res.data.expired
             document.cookie = `vue_class=${token}; expires=${new Date(expired)};path=/`
-            vm.$store.commit('startLoading', false)
-            alert(res.data.message)
-            vm.$router.push('/admin')
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
+            setTimeout(() => {
+              vm.$router.push('/admin')
+            }, 3000)
           } else {
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
             vm.$store.commit('startLoading', false)
-            alert(res.data.message)
           }
         })
-        .catch(function (err) {
-          console.log(err)
+        .catch(() => {
+          vm.bubbleText = '連線錯誤'
+          vm.$refs.bubble.bubbleACtive()
+          vm.$store.commit('startLoading', false)
         })
     }
   },
