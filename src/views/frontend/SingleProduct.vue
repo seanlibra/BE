@@ -821,7 +821,7 @@ input[type=number] {
        border-top:1px solid #ffffff;
      }
 /* top left*/
-    .single_product .ribbon-top-left {
+    .ribbon-top-left {
       top: 10px;
       left: 10px;
     }
@@ -867,7 +867,7 @@ input[type=number] {
   .single_product .cart_tools .add_to_cart {
     padding: 6px 10px;
   }
-  .single_product .maylike_group {
+   .maylike_group {
     order: 3;
   }
 }
