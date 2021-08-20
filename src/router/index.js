@@ -23,10 +23,12 @@ const routes = [
   },
   {
     path: '/product/:id',
+    name: 'product',
     component: () => import('../views/frontend/SingleProduct.vue')
   },
   {
     path: '/post/:id',
+    name: 'post',
     component: () => import('../views/frontend/SinglePost.vue')
   },
   {

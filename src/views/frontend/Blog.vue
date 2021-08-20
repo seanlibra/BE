@@ -207,14 +207,16 @@ export default {
 .read_more a:hover {
   color: #fe5252;
 }
+@media(max-width:768px) {
+  .content {
+    width: 100%;
+  }
+}
 @media (max-width: 414px) {
   .wrapper {
     padding-top: 35px;
     padding-bottom: 35px;
     flex-direction: column-reverse;
-  }
-  .content {
-    width: 100%;
   }
   .post_list li .thumbnail {
     height: 250px;

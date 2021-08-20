@@ -80,6 +80,7 @@ export default {
       vm.$store.commit('startLoading', true)
       vm.$http.post(`${process.env.VUE_APP_API}/api/user/check`)
         .then(res => {
+          console.log(res)
           if (res.data.success) {
             vm.$store.commit('startLoading', false)
           } else {

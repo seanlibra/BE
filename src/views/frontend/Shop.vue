@@ -423,13 +423,13 @@ export default {
   .product_list li {
     width: 48%;
   }
+  .product_list_group {
+    width: 100%;
+  }
 }
 @media (max-width: 414px) {
   .product_list li {
     margin: 0 1% 10% 1%;
-  }
-  .product_list_group {
-    width: 100%;
   }
   .content {
     padding-top: 35px;

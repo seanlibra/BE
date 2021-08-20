@@ -26,7 +26,7 @@
           </div>
           <router-link class="product_thumbnail" :to="`/product/${item.id}`">
             <img
-              v-if="item.imagesUrl[0]"
+              v-if="item.imagesUrl"
               class="on_hover"
               :src="item.imagesUrl[0]"
               alt="商品圖片二"
@@ -273,7 +273,7 @@ export default {
     },
     arrival_list () {
       const newArray = [...this.product_list]
-      newArray.splice(0, 2)
+      newArray.splice(8, 2)
       return newArray
     },
     display_news () {

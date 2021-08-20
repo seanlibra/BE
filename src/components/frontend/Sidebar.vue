@@ -262,10 +262,13 @@ export default {
 .single_recent_info .origin_price.normal {
   text-decoration: none;
 }
-@media (max-width: 414px) {
+@media(max-width:768px) {
   .sidebar {
     width: 100%;
+    order:2;
   }
+}
+@media (max-width: 414px) {
   .sidebar_group h2 {
     font-size: 24px;
     font-weight: bold;

@@ -137,7 +137,9 @@ export default {
   },
   watch: {
     $route (to, from) {
-      this.getPost()
+      if (to.name === 'post') {
+        this.getPost()
+      }
     }
   }
 }
@@ -239,14 +241,16 @@ img {
   margin: 0 1%;
   object-fit: cover;
 }
+@media(max-width:768px) {
+  .content {
+    width: 100%;
+    padding: 10px;
+  }
+}
 @media (max-width: 414px) {
   .wrapper {
     padding-top: 35px;
     padding-bottom: 35px;
-  }
-  .content {
-    width: 100%;
-    padding: 10px;
   }
   .content h2 {
     font-size: 24px;

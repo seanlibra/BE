@@ -4,7 +4,10 @@
       <div class="row">
         <div class="col-lg-3 col-md-6 mb-lg-0 mb-md-5">
           <div class="footer_block">
-            <h2>聯絡資訊</h2>
+            <div class="logo_bk">
+              <h1 class="logo">B<span class="logo_accessory">&</span>E</h1>
+              <span class="sub_title">The best for everyone</span>
+            </div>
             <ul class="footer_contact_list">
               <li>
                 <span class="material-icons">location_on</span>
@@ -92,6 +95,9 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="copyright">
+    © 2021 Copyright by Sean
   </div>
 </template>
 
@@ -335,6 +341,34 @@ export default {
 }
 .quick_link_list li a:hover {
   color: #fe5252;
+}
+.logo_bk {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.logo {
+  font-family: "Sriracha", handwriting;
+  color: #fe5252;
+  margin-bottom: 0;
+  font-size: 50px;
+}
+.logo_accessory {
+  font-size: 26px;
+  margin: 0 2px;
+}
+.sub_title {
+  font-size: 16px;
+  font-family: "Sriracha", handwriting;
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+.copyright {
+  padding: 10px;
+  background: #221d1d;
+  color:#ffffff;
+  text-align: center;
 }
 @media (max-width: 414px) {
   .footer_block {

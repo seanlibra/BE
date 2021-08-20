@@ -132,6 +132,87 @@
           </div>
         </div>
       </div>
+      <div class="maylike_group">
+        <h3>或許你會喜歡</h3>
+        <swiper
+          :slidesPerView="4"
+          :spaceBetween="20"
+          :slidesPerGroup="1"
+          :loop="false"
+          :loopFillGroupWithBlank="true"
+          :pagination="{
+            clickable: true,
+          }"
+          :navigation="true"
+          :breakpoints='{
+              "768": {
+              "slidesPerView": 3,
+              "spaceBetween": 40
+            },
+              "1025": {
+              "slidesPerView": 4,
+              "spaceBetween": 20
+            },
+          }'
+          class="mayLikeTest"
+        >
+          <swiper-slide v-for="item in mayLikeList" :key="item.product.id">
+            <div class="ribbon ribbon-top-left" v-if="item.product.onsale">
+              <span class="ribbon_content">
+                <span class="ribbon_border">{{ item.product.onsale }}</span>
+              </span>
+            </div>
+            <router-link
+              class="product_thumbnail"
+              :to="`/product/${item.product.id}`"
+            >
+              <img
+                v-if="item.product.imagesUrl"
+                class="on_hover"
+                :src="item.product.imagesUrl[0]"
+                alt="商品圖片二"
+              />
+              <img
+                v-else
+                class="on_hover"
+                :src="item.product.imageUrl"
+                alt="商品圖片二"
+              />
+              <img
+                class="default"
+                :src="item.product.imageUrl"
+                alt="商品預設圖"
+              />
+              <div class="product_overlay"></div>
+            </router-link>
+            <router-link
+              class="product_info_link"
+              :to="`/product/${item.product.id}`"
+            >
+              <h4 class="category">
+                {{ item.product.category }}
+              </h4>
+              <h3 class="title">
+                {{ item.product.title }}
+              </h3>
+              <div class="price">
+                <span
+                  :class="{
+                    normal: item.product.price == item.product.origin_price,
+                  }"
+                  class="origin_price"
+                  >$ {{ item.product.origin_price }}</span
+                >
+                <span
+                  v-if="item.product.price !== item.product.origin_price"
+                  class="onsale_price"
+                  >$ {{ item.product.price }}</span
+                >
+              </div>
+            </router-link>
+          </swiper-slide>
+        </swiper>
+      </div>
     </div>
     <Loading v-if="loading"></Loading>
     <Footer></Footer>
@@ -149,25 +230,28 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/swiper.scss'
 
 import 'swiper/components/navigation/navigation.min.css'
+import 'swiper/components/pagination/pagination.min.css'
 import 'swiper/components/thumbs/thumbs.min.css'
 
-import SwiperCore, { Navigation, Thumbs } from 'swiper/core'
-SwiperCore.use([Navigation, Thumbs])
+import SwiperCore, { Navigation, Pagination, Thumbs } from 'swiper/core'
+SwiperCore.use([Navigation, Pagination, Thumbs])
 
 export default {
   data () {
     return {
-      recentList: [],
+      product_list: [],
       product: {
         on_sale: false
       },
+      recentList: [],
       count: 1,
       cartUpdteTrigger: false,
       bubbleText: '',
       pageUrl: '',
       standard: '',
       standardAlert: false,
-      thumbsSwiper: null
+      thumbsSwiper: null,
+      mayLikeList: []
     }
   },
   methods: {
@@ -181,6 +265,7 @@ export default {
             vm.product = res.data.product
             vm.$store.commit('startLoading', false)
             vm.setRecent()
+            vm.getProducts(vm)
           } else {
             vm.$store.commit('startLoading', false)
             vm.bubbleText = res.data.message
@@ -224,6 +309,26 @@ export default {
           })
       }
     },
+    getProducts (vm = this) {
+      vm.$store.commit('startLoading', true)
+      vm.$http.get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/products/all`)
+        .then(res => {
+          if (res.data.success) {
+            vm.product_list = res.data.products.slice().reverse()
+            vm.mayLikeList_fuc()
+            vm.$store.commit('startLoading', false)
+          } else {
+            vm.bubbleText = res.data.message
+            vm.$refs.bubble.bubbleACtive()
+            vm.$store.commit('startLoading', false)
+          }
+        })
+        .catch(() => {
+          vm.bubbleText = '連線錯誤'
+          vm.$refs.bubble.bubbleACtive()
+          vm.$store.commit('startLoading', false)
+        })
+    },
     setRecent () {
       const recentList = [...this.recentList]
       const vm = this
@@ -245,6 +350,41 @@ export default {
       }
       this.recentList = recentList
     },
+    mayLikeList_fuc () {
+      const newArray = [...this.product_list]
+      const nowCategory = this.product.category
+      const nowProductId = this.product.id
+      const filterArray = []
+      const resultArray = []
+      let exist = false
+      if (newArray.length !== 0) {
+        newArray.forEach(function (item) {
+          if (item.category === nowCategory) {
+            filterArray.push(item)
+          }
+        })
+        filterArray.forEach(function (item) {
+          if (item.id === nowProductId) {
+            const nowProductIndex = filterArray.indexOf(item)
+            filterArray.splice(nowProductIndex, 1)
+          }
+        })
+        for (let i = 0; resultArray.length < 6; i++) {
+          exist = false
+          const index = Math.floor(Math.random() * filterArray.length)
+          resultArray.forEach(function (item) {
+            if (index === item.index) {
+              exist = true
+            }
+          })
+          if (!exist) {
+            const val = filterArray[index]
+            resultArray.push({ index: index, product: val })
+          }
+        }
+      }
+      this.mayLikeList = resultArray
+    },
     setThumbsSwiper (swiper) {
       this.thumbsSwiper = swiper
     }
@@ -259,7 +399,10 @@ export default {
   },
   watch: {
     $route (to, from) {
-      this.getProductDetail()
+      if (to.name === 'product') {
+        this.getProductDetail()
+        this.getProducts()
+      }
     }
   },
   created () {
@@ -269,6 +412,21 @@ export default {
   }
 }
 </script>
+<style>
+.maylike_group .swiper-container .swiper-button-prev {
+  color:#fe5252;
+}
+.maylike_group .swiper-container .swiper-button-next {
+  color:#fe5252;
+}
+.maylike_group .swiper-pagination .swiper-pagination-bullet.swiper-pagination-bullet-active {
+  background: #fe5252;
+}
+.maylike_group .swiper-pagination .swiper-pagination-bullet {
+  width: 10px;
+  height:10px;
+}
+</style>
 
 <style scoped>
 input::-webkit-outer-spin-button,
@@ -436,7 +594,6 @@ input[type=number] {
 .soical_media_container a:hover {
   opacity: 0.5;
 }
-
 /* ribbon */
    .ribbon {
      width: 140px;
@@ -520,6 +677,165 @@ input[type=number] {
 .swiper_thumb .swiper-slide-thumb-active {
   opacity: 1;
 }
+
+/* mayLiketest */
+.maylike_group {
+  margin-top: 50px;
+  width: 100%;
+}
+.maylike_group > h3 {
+  font-size: 18px;
+  letter-spacing: 1px;
+  padding-left: 10px;
+  border-left: 3px solid #fe5252;
+  margin-bottom: 25px;
+}
+.maylike_group .swiper-container {
+  display: flex;
+  flex-wrap: wrap;
+  font-family: "Noto Sans TC", sans-serif;
+  padding: 0;
+  width:100%;
+  height:500px;
+}
+.maylike_group .swiper-slide .product_thumbnail {
+  position: relative;
+  display: block;
+  width: 100%;
+  height:350px;
+}
+.maylike_group .swiper-slide .product_thumbnail .default {
+  position: relative;
+  transition: all 0.5s;
+  opacity: 1;
+}
+.maylike_group .swiper-slide .product_thumbnail .on_hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.maylike_group .swiper-slide .product_info_link {
+  display: block;
+  text-decoration: none;
+  padding-top: 15px;
+}
+.maylike_group .swiper-slide .product_thumbnail:hover .default {
+  opacity: 0;
+}
+.maylike_group .swiper-slide .product_thumbnail .product_overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: all 0.3s;
+}
+.maylike_group .swiper-slide .product_thumbnail:hover .product_overlay {
+  background: rgba(0, 0, 0, 0.2);
+}
+.maylike_group .ribbon {
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  position: absolute;
+  z-index: 99;
+  pointer-events: none;
+}
+.maylike_group .ribbon::before,
+.maylike_group .ribbon::after {
+  position: absolute;
+  z-index: -1;
+  content: "";
+  display: block;
+  border: 5px solid #fe5252;
+}
+.maylike_group .ribbon .ribbon_content {
+  position: absolute;
+  display: block;
+  width: 250px;
+  padding: 15px 0;
+  background-color: #fe5252;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  color: #fff;
+  font-size: 18px;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  text-align: center;
+}
+.maylike_group .ribbon .ribbon_content .ribbon_border {
+  padding: 10px 70px;
+  border-bottom: 1px solid #ffffff;
+  border-top: 1px solid #ffffff;
+}
+/* top left*/
+.maylike_group .ribbon-top-left {
+  top: -10px;
+  left: -10px;
+}
+.maylike_group .ribbon-top-left::before,
+.maylike_group .ribbon-top-left::after {
+  border-top-color: transparent;
+  border-left-color: transparent;
+}
+.maylike_group .ribbon-top-left::before {
+  top: 0;
+  right: 0;
+}
+.maylike_group .ribbon-top-left::after {
+  bottom: 0;
+  left: 0;
+}
+.maylike_group .ribbon-top-left span {
+  right: -25px;
+  top: 35px;
+  transform: rotate(-45deg);
+}
+.maylike_group .swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.maylike_group .swiper-slide .category {
+  color: #7e7e7e;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+}
+.maylike_group .swiper-slide .category a {
+  text-decoration: none;
+  color:inherit;
+}
+.maylike_group .swiper-slide .title {
+  font-size: 18px;
+  color: #000000;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+  transition: all .3s;
+}
+.maylike_group .swiper-slide .title:hover {
+  color:#fe5252;
+}
+.maylike_group .swiper-slide .price {
+  font-family: "Sriracha", handwriting;
+  color: #7e7e7e;
+  font-size: 14px;
+  text-decoration: none;
+}
+.maylike_group .swiper-slide .origin_price {
+  text-decoration: line-through;
+  margin-right: 10px;
+}
+.maylike_group .swiper-slide .origin_price.normal {
+  text-decoration: none;
+}
+.maylike_group .swiper-slide .onsale_price {
+  color: #fe5252;
+}
+/* mayLikeList end*/
 @media(max-width:1024px) {
   .product_img {
     height:450px;
@@ -528,10 +844,11 @@ input[type=number] {
 @media (max-width:768px) {
   .wrapper {
     padding-top: 35px;
-    flex-direction: column-reverse;
+    /* flex-direction: column-reverse; */
   }
   .content {
     width: 100%;
+    order:1
   }
   .product_detail > div {
     padding: 10px;
@@ -541,6 +858,9 @@ input[type=number] {
   }
   .cart_tools .add_to_cart {
     padding: 6px 10px;
+  }
+  .maylike_group {
+    order: 3;
   }
 }
 @media(max-width:414px) {
@@ -553,6 +873,9 @@ input[type=number] {
   }
   .product_detail > div {
     width: 100%;
+  }
+  .maylike_group {
+    display: none;
   }
 }
 </style>

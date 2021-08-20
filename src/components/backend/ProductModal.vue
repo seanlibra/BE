@@ -43,7 +43,7 @@
                   class=""
                 >
                   <div :style="`background-image:url(${item})`">
-                    <a href="#">
+                    <a href="#" @click.prevent="removeImagesUrl(index)">
                       <span class="material-icons">close</span>
                     </a>
                   </div>
@@ -242,7 +242,6 @@ export default {
       const vm = this
       vm.$store.commit('startLoading', true)
       const readyToUpdate = { data: vm.detail }
-      console.log(vm.detail)
       vm.$http.put(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${vm.detail.id}`, readyToUpdate)
         .then(res => {
           if (res.data.success) {
@@ -271,6 +270,9 @@ export default {
     addImagesUrl () {
       this.detail.imagesUrl.push(this.imagesUrl)
       this.imagesUrl = ''
+    },
+    removeImagesUrl (index) {
+      this.detail.imagesUrl.splice(index, 1)
     }
   },
   watch: {

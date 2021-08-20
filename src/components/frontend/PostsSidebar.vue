@@ -110,12 +110,14 @@ export default {
   background: #ffffff;
   color: #fe5252;
 }
-@media (max-width: 414px) {
+@media(max-width:768px) {
   .posts_sidebar {
     width: 100%;
     border-left: 0;
     padding: 10px;
   }
+}
+@media (max-width: 414px) {
   .sidebar_item_group h3 {
     font-size: 24px;
     font-weight: bold;

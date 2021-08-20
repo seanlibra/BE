@@ -153,7 +153,6 @@ export default {
       vm.$http.get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/order/${id}`)
         .then(res => {
           if (res.data.success) {
-            console.log(res)
             if (res.data.order) {
               vm.order = res.data.order
             } else {

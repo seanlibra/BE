@@ -125,6 +125,12 @@ export default {
         .then(res => {
           if (res.data.success) {
             vm.list = res.data.products
+            // vm.list.forEach(function (item) {
+            //   item.specifications = []
+            // })
+            // vm.list.forEach(function (item) {
+            //   item.imagesUrl = []
+            // })
             vm.pagination = res.data.pagination
             vm.$store.commit('startLoading', false)
           } else {
