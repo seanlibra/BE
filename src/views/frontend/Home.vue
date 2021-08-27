@@ -154,7 +154,7 @@
 import Header from '@/components/frontend/Header.vue'
 import Footer from '@/components/frontend/Footer.vue'
 import Loading from '@/components/Loading.vue'
-import QuickModal from '@/components/frontend/Quick_modal'
+import QuickModal from '@/components/frontend/QuickModal.vue'
 export default {
   name: 'Home',
   data () {

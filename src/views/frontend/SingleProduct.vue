@@ -357,12 +357,12 @@ export default {
       const resultArray = []
       let exist = false
       if (newArray.length !== 0) {
-        newArray.forEach(function (item) {
+        newArray.forEach(item => {
           if (item.category === nowCategory) {
             filterArray.push(item)
           }
         })
-        filterArray.forEach(function (item) {
+        filterArray.forEach(item => {
           if (item.id === nowProductId) {
             const nowProductIndex = filterArray.indexOf(item)
             filterArray.splice(nowProductIndex, 1)
@@ -371,7 +371,7 @@ export default {
         for (let i = 0; resultArray.length < 6; i++) {
           exist = false
           const index = Math.floor(Math.random() * filterArray.length)
-          resultArray.forEach(function (item) {
+          resultArray.forEach(item => {
             if (index === item.index) {
               exist = true
             }
@@ -620,7 +620,7 @@ export default {
 
 </style>
 
-<style>
+<style scoped>
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -822,8 +822,8 @@ input[type=number] {
      }
 /* top left*/
     .ribbon-top-left {
-      top: 10px;
-      left: 10px;
+      top: -10px;
+      left: -10px;
     }
     .single_product .ribbon-top-left::before,
     .single_product .ribbon-top-left::after {

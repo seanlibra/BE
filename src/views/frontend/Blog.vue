@@ -9,7 +9,6 @@
               :to="`/post/${post.id}`"
               class="thumbnail"
               :style="`background-image:url(${post.imageUrl})`"
-              alt=""
             >
               <div class="thumbnail_overlay"></div>
             </router-link>

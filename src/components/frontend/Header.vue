@@ -16,7 +16,7 @@
         <router-link to="/about">About</router-link>
       </li>
       <li>
-        <router-link to="/cart" href="#" class="cart_link">
+        <router-link to="/cart" class="cart_link">
           <span class="cart" :class="{ fill: !textDark }">{{
             cart_count
           }}</span>
