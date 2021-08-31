@@ -1,6 +1,6 @@
 # Demo
 
-https://seanlibra.github.io/vue3_class_week8/
+https://seanlibra.github.io/BE/
 
 # 首頁
 
